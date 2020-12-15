@@ -1,0 +1,27 @@
+name: DrMap
+version: ${project.version}
+main: org.acornmc.drmap.DrMap
+api-version: 1.16
+authors: [DrBot]
+commands:
+  drmap:
+    description: Manage plugin
+    permission: drmap.command
+    usage: /<command> create|reload
+permissions:
+  drmap.create:
+    default: op
+    description: create command
+    children:
+      drmap.command: true
+  drmap.reload:
+    default: op
+    description: reload command
+    children:
+      drmap.command: true
+  drmap.place:
+    default: op
+    description: place drmaps in item frames
+  drmap.rotate:
+    default: op
+    description: rotate drmaps
