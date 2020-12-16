@@ -31,7 +31,7 @@ public class BukkitListener implements Listener {
     }
 
     @EventHandler
-    public void paintingRotate(PlayerInteractEntityEvent event) {
+    public void frameMap(PlayerInteractEntityEvent event) {
         final Entity clicked = event.getRightClicked();
         if (!(clicked instanceof ItemFrame)) {
             return;
@@ -39,8 +39,8 @@ public class BukkitListener implements Listener {
         Player player = event.getPlayer();
         final ItemFrame frame = (ItemFrame) clicked;
         final ItemStack item = frame.getItem();
-        final Material material = item.getType();
-        if (material == Material.FILLED_MAP) {
+        final Material frameMaterial = item.getType();
+        if (frameMaterial == Material.FILLED_MAP) {
             NamespacedKey key = new NamespacedKey(plugin, "drmap-author");
             ItemMeta itemMeta = item.getItemMeta();
             if (itemMeta == null) {
@@ -54,12 +54,14 @@ public class BukkitListener implements Listener {
                 Lang.send(player, Lang.ACTION_NO_PERMISSION);
                 event.setCancelled(true);
             }
-        } else if (material == Material.AIR) {
+        } else if (frameMaterial == Material.AIR) {
             ItemStack hand = player.getInventory().getItemInMainHand();
-            if (hand.getType() == Material.AIR) {
+            Material usingMaterial = hand.getType();
+            if (usingMaterial == Material.AIR) {
                 hand = player.getInventory().getItemInOffHand();
+                usingMaterial = hand.getType();
             }
-            if (hand.getType() != Material.FILLED_MAP) {
+            if (usingMaterial != Material.FILLED_MAP) {
                 return;
             }
             NamespacedKey key = new NamespacedKey(plugin, "drmap-author");

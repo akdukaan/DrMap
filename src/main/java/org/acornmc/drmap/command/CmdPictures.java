@@ -105,6 +105,10 @@ public class CmdPictures implements TabExecutor {
 
             ItemStack map = new ItemStack(Material.FILLED_MAP);
             MapMeta meta = (MapMeta) map.getItemMeta();
+            if (meta == null) {
+                Lang.send(sender, Lang.ERROR);
+                return true;
+            }
             meta.setMapView(picture.getMapView());
             NamespacedKey key = new NamespacedKey(plugin, "drmap-author");
             meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, player.getUniqueId().toString());
