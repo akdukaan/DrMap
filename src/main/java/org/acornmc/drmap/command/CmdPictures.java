@@ -6,7 +6,6 @@ import org.acornmc.drmap.configuration.Lang;
 import org.acornmc.drmap.picture.Picture;
 import org.acornmc.drmap.picture.PictureManager;
 import org.bukkit.Bukkit;
-import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;

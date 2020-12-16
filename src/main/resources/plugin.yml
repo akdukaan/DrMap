@@ -5,18 +5,18 @@ api-version: 1.16
 authors: [DrBot]
 commands:
   drmap:
-    description: Manage plugin
+    description: create or reload
     permission: drmap.command
-    usage: /<command> create|reload
+    usage: /<command> (create|reload)
 permissions:
   drmap.create:
     default: op
-    description: create command
+    description: create permission
     children:
       drmap.command: true
   drmap.reload:
     default: op
-    description: reload command
+    description: reload permission
     children:
       drmap.command: true
   drmap.place:
