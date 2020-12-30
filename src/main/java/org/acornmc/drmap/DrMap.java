@@ -1,6 +1,6 @@
 package org.acornmc.drmap;
 
-import org.acornmc.drmap.command.CmdPictures;
+import org.acornmc.drmap.command.CommandDrmap;
 import org.acornmc.drmap.configuration.Config;
 import org.acornmc.drmap.configuration.Lang;
 import org.acornmc.drmap.listener.BukkitListener;
@@ -26,10 +26,6 @@ public final class DrMap extends JavaPlugin {
 
         PictureManager.INSTANCE.loadPictures();
         getServer().getPluginManager().registerEvents(new BukkitListener(this), this);
-        getCommand("drmap").setExecutor(new CmdPictures(this));
-    }
-
-    @Override
-    public void onDisable() {
+        getCommand("drmap").setExecutor(new CommandDrmap(this));
     }
 }

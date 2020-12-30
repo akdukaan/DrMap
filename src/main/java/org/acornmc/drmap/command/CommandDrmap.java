@@ -24,10 +24,10 @@ import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CmdPictures implements TabExecutor {
+public class CommandDrmap implements TabExecutor {
     private final DrMap plugin;
 
-    public CmdPictures(DrMap plugin) {
+    public CommandDrmap(DrMap plugin) {
         this.plugin = plugin;
     }
 

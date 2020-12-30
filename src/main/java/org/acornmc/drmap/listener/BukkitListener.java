@@ -51,8 +51,8 @@ public class BukkitListener implements Listener {
                 return;
             }
             if (!player.hasPermission("drmap.rotate")) {
-                Lang.send(player, Lang.ACTION_NO_PERMISSION);
                 event.setCancelled(true);
+                Lang.send(player, Lang.ACTION_NO_PERMISSION);
             }
         } else if (frameMaterial == Material.AIR) {
             ItemStack hand = player.getInventory().getItemInMainHand();
@@ -74,8 +74,8 @@ public class BukkitListener implements Listener {
                 return;
             }
             if (!player.hasPermission("drmap.place")) {
-                Lang.send(player, Lang.ACTION_NO_PERMISSION);
                 event.setCancelled(true);
+                Lang.send(player, Lang.ACTION_NO_PERMISSION);
             }
         }
     }

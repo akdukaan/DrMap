@@ -82,15 +82,13 @@ public class PictureManager {
         for (File file : files) {
             try {
                 Image image = loadImage(file);
-                if (image == null) {
-                    continue;
+                if (image != null) {
+                    MapView mapView = Bukkit.getMap(Short.parseShort(file.getName().split(".png")[0]));
+                    if (mapView != null) {
+                        addPicture(new Picture(image, mapView));
+                        count++;
+                    }
                 }
-                MapView mapView = Bukkit.getMap(Short.parseShort(file.getName().split(".png")[0]));
-                if (mapView == null) {
-                    continue;
-                }
-                addPicture(new Picture(image, mapView));
-                count++;
             } catch (Exception e) {
                 e.printStackTrace();
             }
