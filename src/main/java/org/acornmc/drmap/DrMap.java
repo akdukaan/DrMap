@@ -5,6 +5,7 @@ import org.acornmc.drmap.configuration.Config;
 import org.acornmc.drmap.configuration.Lang;
 import org.acornmc.drmap.listener.BukkitListener;
 import org.acornmc.drmap.picture.PictureManager;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class DrMap extends JavaPlugin {
@@ -27,5 +28,7 @@ public final class DrMap extends JavaPlugin {
         PictureManager.INSTANCE.loadPictures();
         getServer().getPluginManager().registerEvents(new BukkitListener(this), this);
         getCommand("drmap").setExecutor(new CommandDrmap(this));
+
+        new Metrics(this, 9840);
     }
 }
