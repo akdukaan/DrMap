@@ -13,20 +13,22 @@ import java.io.IOException;
 import java.util.logging.Level;
 
 public class Lang {
-    public static String COMMAND_NO_PERMISSION = "&4You do not have permission for that command";
-    public static String ACTION_NO_PERMISSION = "&4You do not have permission for that action";
-    public static String ERROR = "&4Could not download image";
-    public static String IMAGE_CREATED = "&aImage created";
-    public static String MUST_HAVE_MAP = "&4You must have an empty map in your inventory";
-    public static String NOT_PLAYER = "&4This command can only be executed by players";
+    public static String COMMAND_NO_PERMISSION = "&4You do not have permission for that command.";
+    public static String ACTION_NO_PERMISSION = "&4You do not have permission for that action.";
+    public static String ERROR_DOWNLOADING = "&4Could not download image.";
+    public static String IMAGE_CREATED = "&aImage created.";
+    public static String MUST_HAVE_MAP = "&4You must have an empty map in your inventory.";
+    public static String NOT_PLAYER = "&4This command can only be executed by players.";
+    public static String NOT_DRMAP = "&4You must hold a DrMap to use that command.";
 
     private static void init() {
         COMMAND_NO_PERMISSION = getString("command-no-permission", COMMAND_NO_PERMISSION);
         ACTION_NO_PERMISSION = getString("action-no-permission", ACTION_NO_PERMISSION);
-        ERROR = getString("error", ERROR);
+        ERROR_DOWNLOADING = getString("error", ERROR_DOWNLOADING);
         IMAGE_CREATED = getString("image-created", IMAGE_CREATED);
         MUST_HAVE_MAP = getString("must-have-map", MUST_HAVE_MAP);
         NOT_PLAYER = getString("not-player", NOT_PLAYER);
+        NOT_DRMAP = getString("not-drmap", NOT_DRMAP);
     }
 
     // ############################  DO NOT EDIT BELOW THIS LINE  ############################

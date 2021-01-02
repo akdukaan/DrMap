@@ -15,8 +15,10 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.map.MapView;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.awt.*;
@@ -88,7 +90,7 @@ public class CommandDrmap implements TabExecutor {
             Image image = PictureManager.INSTANCE.downloadImage(args[1]);
             if (image == null) {
                 plugin.getLogger().severe("Could not download image: " + args[1]);
-                Lang.send(sender, Lang.ERROR);
+                Lang.send(sender, Lang.ERROR_DOWNLOADING);
                 return true;
             }
 
@@ -96,7 +98,7 @@ public class CommandDrmap implements TabExecutor {
 
             if (!PictureManager.INSTANCE.saveImage(image, mapView.getId())) {
                 plugin.getLogger().severe("Could not save image to disk: " + args[1] + " -> " + mapView.getId() + ".png");
-                Lang.send(sender, Lang.ERROR);
+                Lang.send(sender, Lang.ERROR_DOWNLOADING);
                 return true;
             }
 
@@ -106,7 +108,7 @@ public class CommandDrmap implements TabExecutor {
             ItemStack map = new ItemStack(Material.FILLED_MAP);
             MapMeta meta = (MapMeta) map.getItemMeta();
             if (meta == null) {
-                Lang.send(sender, Lang.ERROR);
+                Lang.send(sender, Lang.ERROR_DOWNLOADING);
                 return true;
             }
             meta.setMapView(picture.getMapView());
@@ -141,6 +143,37 @@ public class CommandDrmap implements TabExecutor {
             });
             Lang.send(sender, Lang.IMAGE_CREATED);
             return true;
+        }
+
+        if (args[0].equalsIgnoreCase("erase")) {
+            if (!sender.hasPermission("drmap.erase")) {
+                Lang.send(sender, Lang.COMMAND_NO_PERMISSION);
+                return true;
+            }
+            if (!(sender instanceof Player)) {
+                Lang.send(sender, Lang.NOT_PLAYER);
+                return true;
+            }
+            Player player = (Player) sender;
+            ItemStack hand = player.getInventory().getItemInMainHand();
+            Material usingMaterial = hand.getType();
+            if (usingMaterial != Material.FILLED_MAP) {
+                Lang.send(sender, Lang.NOT_DRMAP);
+                return true;
+            }
+            NamespacedKey key = new NamespacedKey(plugin, "drmap-author");
+            ItemMeta itemMeta = hand.getItemMeta();
+            if (itemMeta == null) {
+                Lang.send(sender, Lang.NOT_DRMAP);
+                return true;
+            }
+            PersistentDataContainer container = itemMeta.getPersistentDataContainer();
+            if (!container.has(key, PersistentDataType.STRING)) {
+                Lang.send(sender, Lang.NOT_DRMAP);
+                return true;
+            }
+            ItemStack blankMap = new ItemStack(Material.MAP, 1);
+            player.getInventory().setItemInMainHand(blankMap);
         }
         return false;
     }
