@@ -83,7 +83,9 @@ public class PictureManager {
             try {
                 Image image = loadImage(file);
                 if (image != null) {
-                    MapView mapView = Bukkit.getMap(Short.parseShort(file.getName().split(".png")[0]));
+                    String filename = file.getName().split(".png")[0];
+                    int mapInt = Integer.parseInt(filename);
+                    MapView mapView = Bukkit.getMap(mapInt);
                     if (mapView != null) {
                         addPicture(new Picture(image, mapView));
                         count++;
