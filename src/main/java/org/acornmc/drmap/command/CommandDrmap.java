@@ -208,7 +208,13 @@ public class CommandDrmap implements TabExecutor {
                 Lang.send(sender, Lang.NOT_DRMAP);
                 return true;
             }
-            String message = Lang.AUTHOR.replace("{author}", author);
+            UUID authorUUID = UUID.fromString(author);
+            String authorName = Bukkit.getOfflinePlayer(authorUUID).getName();
+            if (authorName == null) {
+                Lang.send(sender, Lang.NOT_DRMAP);
+                return true;
+            }
+            String message = Lang.AUTHOR.replace("{author}", authorName);
             Lang.send(sender, message);
             return true;
         }
