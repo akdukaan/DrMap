@@ -7,7 +7,7 @@ commands:
   drmap:
     description: create or reload
     permission: drmap.command
-    usage: /<command> create <url>\n/<command> reload\n/<command> erase
+    usage: /<command> create <url>\n/<command> reload\n/<command> erase\n/<command> author
 permissions:
   drmap.create:
     default: false
@@ -22,9 +22,16 @@ permissions:
   drmap.erase:
     default: false
     description: erase drmaps
+    children:
+      drmap.command: true
+  drmap.author:
+    default: false
+    description: info on who created drmaps
+    children:
+      drmap.command: true
   drmap.place:
-    default: op
+    default: false
     description: place drmaps in item frames
   drmap.rotate:
-    default: op
+    default: false
     description: rotate drmaps
