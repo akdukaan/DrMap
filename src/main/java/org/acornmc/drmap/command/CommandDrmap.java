@@ -21,14 +21,10 @@ import org.bukkit.map.MapView;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.net.URL;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 public class CommandDrmap implements TabExecutor {
@@ -92,68 +88,63 @@ public class CommandDrmap implements TabExecutor {
                 return true;
             }
 
-            Image image = null;
-            CompletableFuture<Image> data=CompletableFuture.supplyAsync(() -> PictureManager.INSTANCE.downloadImage(args[1]));
-            try {
-                image = data.get();
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-
-            if (image == null) {
-                plugin.getLogger().severe("Could not download image: " + args[1]);
-                Lang.send(sender, Lang.ERROR_DOWNLOADING);
-                return true;
-            }
-
-            MapView mapView = Bukkit.createMap(Bukkit.getWorlds().get(0));
-
-            if (!PictureManager.INSTANCE.saveImage(image, mapView.getId())) {
-                plugin.getLogger().severe("Could not save image to disk: " + args[1] + " -> " + mapView.getId() + ".png");
-                Lang.send(sender, Lang.ERROR_DOWNLOADING);
-                return true;
-            }
-
-            Picture picture = new Picture(image, mapView);
-            PictureManager.INSTANCE.addPicture(picture);
-
-            ItemStack map = new ItemStack(Material.FILLED_MAP);
-            MapMeta meta = (MapMeta) map.getItemMeta();
-            if (meta == null) {
-                Lang.send(sender, Lang.ERROR_DOWNLOADING);
-                return true;
-            }
-            meta.setMapView(picture.getMapView());
-            NamespacedKey key = new NamespacedKey(plugin, "drmap-author");
-            meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, player.getUniqueId().toString());
-            map.setItemMeta(meta);
-
-            // Remove map
-            Inventory inventory = player.getInventory();
-            int size = inventory.getSize();
-            int slot = 0;
-            while (slot < size) {
-                ItemStack is = inventory.getItem(slot);
-                if (is != null) {
-                    if (Material.MAP == is.getType()) {
-                        if (is.getAmount() == 1) {
-                            inventory.clear(slot);
-                        } else {
-                            is.setAmount(is.getAmount()-1);
-                        }
-                        slot = size;
-                    }
+            //Image image = null;
+            CompletableFuture.supplyAsync(() -> PictureManager.INSTANCE.downloadImage(args[1])).whenCompleteAsync((Image image, Throwable exception) -> {
+                if (image == null) {
+                    plugin.getLogger().severe("Could not download image: " + args[1]);
+                    Lang.send(sender, Lang.ERROR_DOWNLOADING);
+                    return;
                 }
-                slot++;
-            }
 
-            // Give map
-            player.getInventory().addItem(map).forEach((index, item) -> {
-                Item drop = player.getWorld().dropItem(player.getLocation(), item);
-                drop.setPickupDelay(0);
-                drop.setOwner(player.getUniqueId());
-            });
-            Lang.send(sender, Lang.IMAGE_CREATED);
+                MapView mapView = Bukkit.createMap(Bukkit.getWorlds().get(0));
+
+                if (!PictureManager.INSTANCE.saveImage(image, mapView.getId())) {
+                    plugin.getLogger().severe("Could not save image to disk: " + args[1] + " -> " + mapView.getId() + ".png");
+                    Lang.send(sender, Lang.ERROR_DOWNLOADING);
+                    return;
+                }
+
+                Picture picture = new Picture(image, mapView);
+                PictureManager.INSTANCE.addPicture(picture);
+
+                ItemStack map = new ItemStack(Material.FILLED_MAP);
+                MapMeta meta = (MapMeta) map.getItemMeta();
+                if (meta == null) {
+                    Lang.send(sender, Lang.ERROR_DOWNLOADING);
+                    return;
+                }
+                meta.setMapView(picture.getMapView());
+                NamespacedKey key = new NamespacedKey(plugin, "drmap-author");
+                meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, player.getUniqueId().toString());
+                map.setItemMeta(meta);
+
+                // Remove map
+                Inventory inventory = player.getInventory();
+                int size = inventory.getSize();
+                int slot = 0;
+                while (slot < size) {
+                    ItemStack is = inventory.getItem(slot);
+                    if (is != null) {
+                        if (Material.MAP == is.getType()) {
+                            if (is.getAmount() == 1) {
+                                inventory.clear(slot);
+                            } else {
+                                is.setAmount(is.getAmount()-1);
+                            }
+                            slot = size;
+                        }
+                    }
+                    slot++;
+                }
+
+                // Give map
+                player.getInventory().addItem(map).forEach((index, item) -> {
+                    Item drop = player.getWorld().dropItem(player.getLocation(), item);
+                    drop.setPickupDelay(0);
+                    drop.setOwner(player.getUniqueId());
+                });
+                Lang.send(sender, Lang.IMAGE_CREATED);
+            }, plugin.getMainThreadExecutor());
             return true;
         }
 
