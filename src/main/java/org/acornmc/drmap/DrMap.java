@@ -7,7 +7,9 @@ import org.acornmc.drmap.listener.BukkitListener;
 import org.acornmc.drmap.picture.PictureManager;
 import org.apache.commons.lang.Validate;
 import org.bstats.bukkit.Metrics;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.concurrent.Executor;
 

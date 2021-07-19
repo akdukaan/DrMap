@@ -22,6 +22,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.awt.*;
+import java.io.File;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -88,12 +89,10 @@ public class CommandDrmap implements TabExecutor {
                 return true;
             }
 
+            // in the next release, i plan to make nonstretched the default
             boolean stretched;
-            if (args.length > 2 && args[2].equalsIgnoreCase("original")) {
-                stretched = false;
-            } else {
-                stretched = true;
-            }
+            stretched = args.length > 2 && args[2].equalsIgnoreCase("stretch");
+
             CompletableFuture.supplyAsync(() -> PictureManager.INSTANCE.downloadImage(args[1], stretched))
                     .whenCompleteAsync((Image image, Throwable exception) -> {
                 if (image == null) {
@@ -151,6 +150,14 @@ public class CommandDrmap implements TabExecutor {
                     drop.setPickupDelay(0);
                     drop.setOwner(player.getUniqueId());
                 });
+
+                // reload the map
+                File dir = new File(DrMap.getInstance().getDataFolder(), "images");
+                File[] files = dir.listFiles((dir1, name) -> name.equals(mapView.getId() + ".png"));
+                if (files != null && files.length > 0) {
+                    Image centeredImage = PictureManager.INSTANCE.loadImage(files[0]);
+                    PictureManager.INSTANCE.addPicture(new Picture(centeredImage, mapView));
+                }
                 Lang.send(sender, Lang.IMAGE_CREATED);
             }, plugin.getMainThreadExecutor());
             return true;
