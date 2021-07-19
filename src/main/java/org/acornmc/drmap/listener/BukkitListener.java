@@ -3,6 +3,7 @@ package org.acornmc.drmap.listener;
 import org.acornmc.drmap.DrMap;
 import org.acornmc.drmap.configuration.Lang;
 import org.acornmc.drmap.picture.PictureManager;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
@@ -27,7 +28,12 @@ public class BukkitListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent event) {
-        PictureManager.INSTANCE.sendAllMaps(event.getPlayer());
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+            @Override
+            public void run() {
+                PictureManager.INSTANCE.sendAllMaps(event.getPlayer());
+            }
+        });
     }
 
     @EventHandler

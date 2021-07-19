@@ -21,9 +21,14 @@ import org.bukkit.map.MapView;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.net.URL;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 public class CommandDrmap implements TabExecutor {
@@ -87,7 +92,14 @@ public class CommandDrmap implements TabExecutor {
                 return true;
             }
 
-            Image image = PictureManager.INSTANCE.downloadImage(args[1]);
+            Image image = null;
+            CompletableFuture<Image> data=CompletableFuture.supplyAsync(() -> PictureManager.INSTANCE.downloadImage(args[1]));
+            try {
+                image = data.get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+
             if (image == null) {
                 plugin.getLogger().severe("Could not download image: " + args[1]);
                 Lang.send(sender, Lang.ERROR_DOWNLOADING);

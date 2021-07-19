@@ -9,7 +9,11 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,12 +30,31 @@ public class PictureManager {
         pictures.forEach(picture -> player.sendMap(picture.getMapView()));
     }
 
-    public Image downloadImage(String url) {
+    public Image downloadImage(String link) {
+        BufferedImage image = null;
+        URLConnection con = null;
+        InputStream in = null;
         try {
-            BufferedImage image = ImageIO.read(new URL(url));
-            return image == null ? null : image.getScaledInstance(128, 128, 1);
-        } catch (Exception e) {
-            e.printStackTrace();
+            URL url = new URL(link);
+            con = url.openConnection();
+            con.setConnectTimeout(500);
+            con.setReadTimeout(500);
+            in = con.getInputStream();
+            image = ImageIO.read(in);
+            return image.getScaledInstance(128, 128, 1);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            if(in != null) {
+                try {
+                    in.close();
+                } catch(IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            if(con != null) {
+                ((HttpURLConnection) con).disconnect();
+            }
         }
         return null;
     }
