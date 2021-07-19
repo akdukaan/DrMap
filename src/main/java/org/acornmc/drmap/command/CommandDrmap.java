@@ -88,8 +88,14 @@ public class CommandDrmap implements TabExecutor {
                 return true;
             }
 
-            //Image image = null;
-            CompletableFuture.supplyAsync(() -> PictureManager.INSTANCE.downloadImage(args[1])).whenCompleteAsync((Image image, Throwable exception) -> {
+            boolean stretched;
+            if (args.length > 2 && args[2].equalsIgnoreCase("original")) {
+                stretched = false;
+            } else {
+                stretched = true;
+            }
+            CompletableFuture.supplyAsync(() -> PictureManager.INSTANCE.downloadImage(args[1], stretched))
+                    .whenCompleteAsync((Image image, Throwable exception) -> {
                 if (image == null) {
                     plugin.getLogger().severe("Could not download image: " + args[1]);
                     Lang.send(sender, Lang.ERROR_DOWNLOADING);
@@ -114,6 +120,8 @@ public class CommandDrmap implements TabExecutor {
                     return;
                 }
                 meta.setMapView(picture.getMapView());
+
+                // Mark the author
                 NamespacedKey key = new NamespacedKey(plugin, "drmap-author");
                 meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, player.getUniqueId().toString());
                 map.setItemMeta(meta);

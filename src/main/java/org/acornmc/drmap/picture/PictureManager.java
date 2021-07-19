@@ -30,7 +30,7 @@ public class PictureManager {
         pictures.forEach(picture -> player.sendMap(picture.getMapView()));
     }
 
-    public Image downloadImage(String link) {
+    public Image downloadImage(String link, boolean stretched) {
         BufferedImage image = null;
         URLConnection con = null;
         InputStream in = null;
@@ -41,7 +41,14 @@ public class PictureManager {
             con.setReadTimeout(500);
             in = con.getInputStream();
             image = ImageIO.read(in);
-            return image.getScaledInstance(128, 128, 1);
+            if (stretched) {
+                return image.getScaledInstance(128, 128, 1);
+            }
+            if (image.getHeight() > image.getWidth()) {
+                return image.getScaledInstance(128*image.getWidth()/image.getHeight(), 128, 1);
+            } else {
+                return image.getScaledInstance(128, 128*image.getHeight()/image.getWidth(), 1);
+            }
         } catch (IOException ex) {
             ex.printStackTrace();
         } finally {
@@ -62,7 +69,7 @@ public class PictureManager {
     public Image loadImage(File file) {
         try {
             BufferedImage image = ImageIO.read(file);
-            return image == null ? null : image.getScaledInstance(128, 128, 1);
+            return image;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -75,9 +82,9 @@ public class PictureManager {
             if (!dir.exists() && !dir.mkdirs()) {
                 return false;
             }
-            BufferedImage bufImg = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+            BufferedImage bufImg = new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);
             Graphics2D gfx = bufImg.createGraphics();
-            gfx.drawImage(image, 0, 0, null);
+            gfx.drawImage(image, ((128-image.getWidth(null))/2), ((128-image.getHeight(null))/2), null);
             gfx.dispose();
             ImageIO.write(bufImg, "png", new File(dir, id + ".png"));
             return true;
