@@ -7,7 +7,7 @@ commands:
   drmap:
     description: create or reload
     permission: drmap.command
-    usage: "/<command> create <url>\n/<command> reload\n/<command> erase\n/<command> author"
+    usage: "/<command> create <url> [-s]\n/<command> reload\n/<command> erase\n/<command> author"
 permissions:
   drmap.create:
     default: op

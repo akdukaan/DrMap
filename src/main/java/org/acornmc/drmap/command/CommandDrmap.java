@@ -37,8 +37,9 @@ public class CommandDrmap implements TabExecutor {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+        ArrayList<String> list = new ArrayList<>();
+
         if (args.length == 1 && (sender.hasPermission("drmap.create") || sender.hasPermission("drmap.reload"))) {
-            ArrayList<String> list = new ArrayList<>();
             if (sender.hasPermission("drmap.create")) {
                 list.add("create");
             }
@@ -47,6 +48,14 @@ public class CommandDrmap implements TabExecutor {
             }
             return list.stream()
                     .filter(arg -> arg.startsWith(args[0].toLowerCase()))
+                    .collect(Collectors.toList());
+
+        } else if (args.length == 2) {
+            if (sender.hasPermission("drmap.create") && args[0].equalsIgnoreCase("create")) {
+                list.add("-s");
+            }
+            return list.stream()
+                    .filter(arg -> arg.startsWith(args[1].toLowerCase()))
                     .collect(Collectors.toList());
         }
         return Collections.emptyList();
@@ -89,9 +98,7 @@ public class CommandDrmap implements TabExecutor {
                 return true;
             }
 
-            // in the next release, i plan to make nonstretched the default
-            boolean stretched;
-            stretched = args.length > 2 && args[2].equalsIgnoreCase("stretch");
+            boolean stretched = args.length > 2 && args[2].equalsIgnoreCase("-s");
 
             CompletableFuture.supplyAsync(() -> PictureManager.INSTANCE.downloadImage(args[1], stretched))
                     .whenCompleteAsync((Image image, Throwable exception) -> {
