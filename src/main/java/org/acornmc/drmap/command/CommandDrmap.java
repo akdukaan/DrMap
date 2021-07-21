@@ -57,16 +57,13 @@ public class CommandDrmap implements TabExecutor {
                     .collect(Collectors.toList());
 
         } else if (args.length == 3) {
-            System.out.println("get to 1");
             if (sender.hasPermission("drmap.create") && args[0].equalsIgnoreCase("create")) {
-                System.out.println("get to 2");
                 list.add("-s");
             }
             return list.stream()
                     .filter(arg -> arg.startsWith(args[2].toLowerCase()))
                     .collect(Collectors.toList());
         }
-        System.out.println(args.length);
         return Collections.emptyList();
     }
 
