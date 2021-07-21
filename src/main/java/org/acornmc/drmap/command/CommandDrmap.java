@@ -46,18 +46,27 @@ public class CommandDrmap implements TabExecutor {
             if (sender.hasPermission("drmap.reload")) {
                 list.add("reload");
             }
+            if (sender.hasPermission("drmap.author")) {
+                list.add("author");
+            }
+            if (sender.hasPermission("drmap.erase")) {
+                list.add("erase");
+            }
             return list.stream()
                     .filter(arg -> arg.startsWith(args[0].toLowerCase()))
                     .collect(Collectors.toList());
 
-        } else if (args.length == 2) {
+        } else if (args.length == 3) {
+            System.out.println("get to 1");
             if (sender.hasPermission("drmap.create") && args[0].equalsIgnoreCase("create")) {
+                System.out.println("get to 2");
                 list.add("-s");
             }
             return list.stream()
-                    .filter(arg -> arg.startsWith(args[1].toLowerCase()))
+                    .filter(arg -> arg.startsWith(args[2].toLowerCase()))
                     .collect(Collectors.toList());
         }
+        System.out.println(args.length);
         return Collections.emptyList();
     }
 
