@@ -39,7 +39,7 @@ public class CommandDrmap implements TabExecutor {
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         ArrayList<String> list = new ArrayList<>();
 
-        if (args.length == 1 && (sender.hasPermission("drmap.create") || sender.hasPermission("drmap.reload"))) {
+        if (args.length == 1) {
             if (sender.hasPermission("drmap.create")) {
                 list.add("create");
             }
