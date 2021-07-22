@@ -192,18 +192,19 @@ public class CommandDrmap implements TabExecutor {
                 Lang.send(sender, Lang.NOT_DRMAP);
                 return true;
             }
-            NamespacedKey key = new NamespacedKey(plugin, "drmap-author");
             ItemMeta itemMeta = hand.getItemMeta();
             if (itemMeta == null) {
                 Lang.send(sender, Lang.NOT_DRMAP);
                 return true;
             }
+            NamespacedKey key = new NamespacedKey(plugin, "drmap-author");
             PersistentDataContainer container = itemMeta.getPersistentDataContainer();
             if (!container.has(key, PersistentDataType.STRING)) {
                 Lang.send(sender, Lang.NOT_DRMAP);
                 return true;
             }
-            ItemStack blankMap = new ItemStack(Material.MAP, 1);
+            int amount = hand.getAmount();
+            ItemStack blankMap = new ItemStack(Material.MAP, amount);
             player.getInventory().setItemInMainHand(blankMap);
             return true;
         }
