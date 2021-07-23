@@ -20,13 +20,13 @@ import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.map.MapView;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.util.StringUtil;
 
 import java.awt.*;
 import java.io.File;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 public class CommandDrmap implements TabExecutor {
     private final DrMap plugin;
@@ -52,19 +52,16 @@ public class CommandDrmap implements TabExecutor {
             if (sender.hasPermission("drmap.erase")) {
                 list.add("erase");
             }
-            return list.stream()
-                    .filter(arg -> arg.startsWith(args[0].toLowerCase()))
-                    .collect(Collectors.toList());
+            return StringUtil.copyPartialMatches(args[0], list, new ArrayList<>());
 
         } else if (args.length == 3) {
             if (sender.hasPermission("drmap.create") && args[0].equalsIgnoreCase("create")) {
                 list.add("-s");
             }
-            return list.stream()
-                    .filter(arg -> arg.startsWith(args[2].toLowerCase()))
-                    .collect(Collectors.toList());
+            return StringUtil.copyPartialMatches(args[2], list, new ArrayList<>());
         }
-        return Collections.emptyList();
+
+        return list;
     }
 
     @Override
