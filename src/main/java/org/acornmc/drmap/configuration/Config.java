@@ -12,9 +12,11 @@ import java.util.logging.Level;
 
 public class Config {
     public static String LANGUAGE_FILE = "lang-en.yml";
+    public static boolean ENABLE_BSTATS = true;
 
     private static void init() {
         LANGUAGE_FILE = getString("language-file", LANGUAGE_FILE);
+        ENABLE_BSTATS = getBoolean("enable-bstats", true);
     }
 
     // ############################  DO NOT EDIT BELOW THIS LINE  ############################
@@ -49,5 +51,10 @@ public class Config {
     private static String getString(String path, String def) {
         config.addDefault(path, def);
         return config.getString(path, config.getString(path));
+    }
+
+    private static boolean getBoolean(String path, boolean def) {
+        config.addDefault(path, def);
+        return config.getBoolean(path, config.getBoolean(path));
     }
 }
