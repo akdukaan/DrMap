@@ -195,12 +195,12 @@ public class CommandDrmap implements TabExecutor {
                     return;
                 }
 
-                Set<ItemStack> set = new HashSet<>();
-                for (int i = 0; i < images.length; i++) {
-                    for (int j = 0; j < images[i].length; j++) {
+                List<ItemStack> maps = new LinkedList<>();
+                for (int j = 0; j < images[0].length; j++) {
+                    for (int i = 0; i < images.length; i++) {
                         MapView mapView = Bukkit.createMap(Bukkit.getWorlds().get(0));
                         if (!PictureManager.INSTANCE.saveImage(images[i][j], mapView.getId())) {
-                            plugin.getLogger().severe("Could not save image to disk: " + args[1] + " -> " + mapView.getId() + ".png");
+                            plugin.getLogger().warning("Could not save image to disk: " + args[1] + " -> " + mapView.getId() + ".png");
                             Lang.send(sender, Lang.ERROR_DOWNLOADING);
                             return;
                         }
@@ -220,7 +220,7 @@ public class CommandDrmap implements TabExecutor {
                         NamespacedKey key = new NamespacedKey(plugin, "drmap-author");
                         meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, player.getUniqueId().toString());
                         map.setItemMeta(meta);
-                        set.add(map);
+                        maps.add(map);
                     }
                 }
 
@@ -231,7 +231,7 @@ public class CommandDrmap implements TabExecutor {
                 }
 
                 // Give filled maps
-                for (ItemStack is : set) {
+                for (ItemStack is : maps) {
                     player.getInventory().addItem(is).forEach((index, item) -> {
                         Item drop = player.getWorld().dropItem(player.getLocation(), item);
                         drop.setPickupDelay(0);

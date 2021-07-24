@@ -28,12 +28,7 @@ public class BukkitListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent event) {
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-            @Override
-            public void run() {
-                PictureManager.INSTANCE.sendAllMaps(event.getPlayer());
-            }
-        });
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> PictureManager.INSTANCE.sendAllMaps(event.getPlayer()));
     }
 
     @EventHandler

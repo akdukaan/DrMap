@@ -42,8 +42,8 @@ public class PictureManager {
             con.setReadTimeout(500);
             in = con.getInputStream();
             image = ImageIO.read(in);
-            for (int w = 0; w < width; w++) {
-                for (int h = 0; h < height; h++) {
+            for (int h = 0; h < height; h++) {
+                for (int w = 0; w < width; w++) {
                     BufferedImage bufferedImage = image.getSubimage(w * image.getWidth() / width, h * image.getHeight() / height, image.getWidth() / width, image.getHeight() / height);
                     images[w][h] = bufferedImage.getScaledInstance(128, 128, 1);
                 }
@@ -98,8 +98,7 @@ public class PictureManager {
                 g2d.dispose();
                 return newImage;
             }
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        } catch (IOException ignored) {
         } finally {
             if(in != null) {
                 try {
