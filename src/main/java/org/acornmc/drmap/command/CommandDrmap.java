@@ -13,7 +13,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.MapMeta;
@@ -23,7 +22,6 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.StringUtil;
 
 import java.awt.*;
-import java.io.File;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -46,19 +44,13 @@ public class CommandDrmap implements TabExecutor {
             if (sender.hasPermission("drmap.reload")) {
                 list.add("reload");
             }
-            if (sender.hasPermission("drmap.author")) {
-                list.add("author");
+            if (sender.hasPermission("drmap.info")) {
+                list.add("info");
             }
             if (sender.hasPermission("drmap.erase")) {
                 list.add("erase");
             }
             return StringUtil.copyPartialMatches(args[0], list, new ArrayList<>());
-
-        } else if (args.length == 3) {
-            if (sender.hasPermission("drmap.create") && args[0].equalsIgnoreCase("create")) {
-                list.add("-s");
-            }
-            return StringUtil.copyPartialMatches(args[2], list, new ArrayList<>());
         }
 
         return list;
@@ -284,8 +276,8 @@ public class CommandDrmap implements TabExecutor {
             player.getInventory().setItemInMainHand(blankMap);
             return true;
         }
-        if (args[0].equalsIgnoreCase("author")) {
-            if (!sender.hasPermission("drmap.author")) {
+        if (args[0].equalsIgnoreCase("info") || args[0].equalsIgnoreCase("author")) {
+            if (!sender.hasPermission("drmap.info")) {
                 Lang.send(sender, Lang.COMMAND_NO_PERMISSION);
                 return true;
             }
