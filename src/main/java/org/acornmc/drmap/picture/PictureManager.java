@@ -30,8 +30,9 @@ public class PictureManager {
         pictures.forEach(picture -> player.sendMap(picture.getMapView()));
     }
 
-    public Image downloadImage(String link, boolean stretched) {
-        BufferedImage image = null;
+    public Image[][] downloadStretchedImage(String link, int width, int height) {
+        Image[][] images = new Image[width][height];
+        BufferedImage image;
         URLConnection con = null;
         InputStream in = null;
         try {
@@ -41,13 +42,61 @@ public class PictureManager {
             con.setReadTimeout(500);
             in = con.getInputStream();
             image = ImageIO.read(in);
-            if (stretched) {
-                return image.getScaledInstance(128, 128, 1);
+            for (int w = 0; w < width; w++) {
+                for (int h = 0; h < height; h++) {
+                    BufferedImage bufferedImage = image.getSubimage(w * image.getWidth() / width, h * image.getHeight() / height, image.getWidth() / width, image.getHeight() / height);
+                    images[w][h] = bufferedImage.getScaledInstance(128, 128, 1);
+                }
             }
-            if (image.getHeight() > image.getWidth()) {
-                return image.getScaledInstance(128*image.getWidth()/image.getHeight(), 128, 1);
+            return images;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            if(in != null) {
+                try {
+                    in.close();
+                } catch(IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            if(con != null) {
+                ((HttpURLConnection) con).disconnect();
+            }
+        }
+        return null;
+    }
+
+    public Image downloadProportionalImage(String link) {
+        BufferedImage image;
+        URLConnection con = null;
+        InputStream in = null;
+        try {
+            URL url = new URL(link);
+            con = url.openConnection();
+            con.setConnectTimeout(500);
+            con.setReadTimeout(500);
+            in = con.getInputStream();
+            image = ImageIO.read(in);
+            if (image.getHeight() >= image.getWidth()) {
+                Image resizedImage = image.getScaledInstance(128*image.getWidth()/image.getHeight(), 128, 1);
+                BufferedImage newImage = new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);
+                Graphics2D g2d = newImage.createGraphics();
+                g2d.setComposite(AlphaComposite.Clear);
+                g2d.fillRect(0, 0, 128, 128);
+                g2d.setComposite(AlphaComposite.Src);
+                g2d.drawImage(resizedImage, ((128-resizedImage.getWidth(null))/2), ((128-resizedImage.getHeight(null))/2), null);
+                g2d.dispose();
+                return newImage;
             } else {
-                return image.getScaledInstance(128, 128*image.getHeight()/image.getWidth(), 1);
+                Image resizedImage = image.getScaledInstance(128, 128*image.getHeight()/image.getWidth(), 1);
+                BufferedImage newImage = new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);
+                Graphics2D g2d = newImage.createGraphics();
+                g2d.setComposite(AlphaComposite.Clear);
+                g2d.fillRect(0, 0, 128, 128);
+                g2d.setComposite(AlphaComposite.Src);
+                g2d.drawImage(resizedImage, ((128-resizedImage.getWidth(null))/2), ((128-resizedImage.getHeight(null))/2), null);
+                g2d.dispose();
+                return newImage;
             }
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -84,7 +133,7 @@ public class PictureManager {
             }
             BufferedImage bufImg = new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);
             Graphics2D gfx = bufImg.createGraphics();
-            gfx.drawImage(image, ((128-image.getWidth(null))/2), ((128-image.getHeight(null))/2), null);
+            gfx.drawImage(image, 0, 0, null);
             gfx.dispose();
             ImageIO.write(bufImg, "png", new File(dir, id + ".png"));
             return true;
