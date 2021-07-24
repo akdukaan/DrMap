@@ -23,6 +23,7 @@ public class Lang {
     public static String NOT_PLAYER = "&4This command can only be executed by players.";
     public static String NOT_DRMAP = "&4You must hold a DrMap to use that command.";
     public static String AUTHOR  = "&aThis map was created by {author}.";
+    public static String NOT_ENOUGH_MAPS = "&4You do not have enough maps for an image of that size.";
 
     private static void init() {
         COMMAND_NO_PERMISSION = getString("command-no-permission", COMMAND_NO_PERMISSION);
@@ -33,6 +34,7 @@ public class Lang {
         NOT_PLAYER = getString("not-player", NOT_PLAYER);
         NOT_DRMAP = getString("not-drmap", NOT_DRMAP);
         AUTHOR = getString("author", AUTHOR);
+        NOT_ENOUGH_MAPS = getString("not-enough-maps", NOT_ENOUGH_MAPS);
     }
 
     // ############################  DO NOT EDIT BELOW THIS LINE  ############################

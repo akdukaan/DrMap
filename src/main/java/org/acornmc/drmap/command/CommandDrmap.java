@@ -138,7 +138,7 @@ public class CommandDrmap implements TabExecutor {
                 }
             }
             if (playerHas < requiredAmount) {
-                Lang.send(sender, Lang.MUST_HAVE_MAP); //TODO Explain this better
+                Lang.send(sender, Lang.NOT_ENOUGH_MAPS);
                 return true;
             }
 
@@ -179,7 +179,7 @@ public class CommandDrmap implements TabExecutor {
 
                     //Remove maps
                     if (!(removeFromInventory(player, Material.MAP, finalRequiredAmount))) {
-                        Lang.send(sender, Lang.MUST_HAVE_MAP); //TODO change this to not enough map
+                        Lang.send(sender, Lang.NOT_ENOUGH_MAPS);
                         return;
                     }
 
@@ -234,7 +234,7 @@ public class CommandDrmap implements TabExecutor {
 
                 //Remove empty maps
                 if (!(removeFromInventory(player, Material.MAP, finalRequiredAmount))) {
-                    Lang.send(sender, Lang.MUST_HAVE_MAP); //TODO change this to not enough map
+                    Lang.send(sender, Lang.NOT_ENOUGH_MAPS);
                     return;
                 }
 
