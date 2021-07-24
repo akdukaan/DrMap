@@ -174,7 +174,6 @@ public class CommandDrmap implements TabExecutor {
 
                     //Remove maps
                     if (!(removeFromInventory(player, Material.MAP, finalRequiredAmount))) {
-                        System.out.println("didnt have enough map");
                         Lang.send(sender, Lang.MUST_HAVE_MAP); //TODO change this to not enough map
                         return;
                     }
@@ -198,13 +197,10 @@ public class CommandDrmap implements TabExecutor {
                     Lang.send(sender, Lang.ERROR_DOWNLOADING);
                     return;
                 }
-                System.out.println("imlength "  + images.length);
-
 
                 Set<ItemStack> set = new HashSet<>();
                 for (int i = 0; i < images.length; i++) {
                     for (int j = 0; j < images[i].length; j++) {
-                        System.out.println("how many times does it enter this loop");
                         MapView mapView = Bukkit.createMap(Bukkit.getWorlds().get(0));
                         if (!PictureManager.INSTANCE.saveImage(images[i][j], mapView.getId())) {
                             plugin.getLogger().severe("Could not save image to disk: " + args[1] + " -> " + mapView.getId() + ".png");
@@ -224,7 +220,6 @@ public class CommandDrmap implements TabExecutor {
                         meta.setMapView(picture.getMapView());
 
                         // Mark the author
-                        System.out.println("and how may times it get here");
                         NamespacedKey key = new NamespacedKey(plugin, "drmap-author");
                         meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, player.getUniqueId().toString());
                         map.setItemMeta(meta);
@@ -238,7 +233,6 @@ public class CommandDrmap implements TabExecutor {
                     return;
                 }
 
-                System.out.println("Dbug1 " + set.isEmpty());
                 // Give filled maps
                 for (ItemStack is : set) {
                     player.getInventory().addItem(is).forEach((index, item) -> {
@@ -338,11 +332,9 @@ public class CommandDrmap implements TabExecutor {
             if (is != null) {
                 if (is.getType() == material) {
                     if (is.getAmount() >= removeAmount) {
-                        System.out.println("enters loop1");
                         is.setAmount(is.getAmount() - removeAmount);
                         removeAmount = 0;
                     } else {
-                        System.out.println("enters loop2");
                         is.setAmount(0);
                         removeAmount -= is.getAmount();
                     }
@@ -358,7 +350,6 @@ public class CommandDrmap implements TabExecutor {
             Item drop = player.getWorld().dropItem(player.getLocation(), new ItemStack(material, initialRemoveAmount - removeAmount));
             drop.setPickupDelay(0);
             drop.setOwner(player.getUniqueId());
-            System.out.println("returning false1");
             return false;
         }
     }

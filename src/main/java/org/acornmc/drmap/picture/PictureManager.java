@@ -42,11 +42,8 @@ public class PictureManager {
             con.setReadTimeout(500);
             in = con.getInputStream();
             image = ImageIO.read(in);
-            System.out.println(width);
-            System.out.println(height);
             for (int w = 0; w < width; w++) {
                 for (int h = 0; h < height; h++) {
-                    System.out.println("downloadstretchedimage47");
                     BufferedImage bufferedImage = image.getSubimage(w * image.getWidth() / width, h * image.getHeight() / height, image.getWidth() / width, image.getHeight() / height);
                     images[w][h] = bufferedImage.getScaledInstance(128, 128, 1);
                 }
