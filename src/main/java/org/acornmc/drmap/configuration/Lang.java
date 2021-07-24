@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.util.logging.Level;
 
 public class Lang {
+    private static YamlConfiguration config;
+
     public static String COMMAND_NO_PERMISSION = "&4You do not have permission for that command.";
     public static String ACTION_NO_PERMISSION = "&4You do not have permission for that action.";
     public static String ERROR_DOWNLOADING = "&4Could not download image.";
@@ -59,8 +61,6 @@ public class Lang {
             Bukkit.getLogger().log(Level.SEVERE, "Could not save " + configFile, ex);
         }
     }
-
-    private static YamlConfiguration config;
 
     private static String getString(String path, String def) {
         config.addDefault(path, def);

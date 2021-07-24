@@ -13,6 +13,7 @@ import java.util.logging.Level;
 public class Config {
     public static String LANGUAGE_FILE = "lang-en.yml";
     public static boolean ENABLE_BSTATS = true;
+    private static YamlConfiguration config;
 
     private static void init() {
         LANGUAGE_FILE = getString("language-file", LANGUAGE_FILE);
@@ -45,8 +46,6 @@ public class Config {
             Bukkit.getLogger().log(Level.SEVERE, "Could not save " + configFile, ex);
         }
     }
-
-    private static YamlConfiguration config;
 
     private static String getString(String path, String def) {
         config.addDefault(path, def);
