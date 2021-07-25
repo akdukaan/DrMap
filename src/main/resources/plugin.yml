@@ -5,11 +5,16 @@ api-version: 1.17
 authors: [DrBot]
 commands:
   drmap:
-    description: create or reload
+    description: import online images to maps
     permission: drmap.command
     usage: "/<command> create <url> [width] [height]\n/<command> reload\n/<command> erase\n/<command> info"
 permissions:
   drmap.create:
+    default: op
+    description: create drmaps
+    children:
+      drmap.command.create: true
+  drmap.command.create:
     default: op
     description: create drmaps
     children:
@@ -18,8 +23,18 @@ permissions:
     default: op
     description: reload plugin
     children:
+      drmap.command.reload: true
+  drmap.command.reload:
+    default: op
+    description: reload plugin
+    children:
       drmap.command: true
   drmap.erase:
+    default: op
+    description: erase drmaps
+    children:
+      drmap.command.erase: true
+  drmap.commmand.erase:
     default: op
     description: erase drmaps
     children:
@@ -28,15 +43,15 @@ permissions:
     default: op
     description: info on who created drmaps
     children:
-      drmap.info: true
+      drmap.command.info: true
   drmap.place:
     default: op
     description: place drmaps in item frames
   drmap.rotate:
     default: op
     description: rotate drmaps
-  drmap.info:
+  drmap.command.info:
     default: op
-    description: info on drmaps
+    description: get info on drmaps
     children:
       drmap.command: true
