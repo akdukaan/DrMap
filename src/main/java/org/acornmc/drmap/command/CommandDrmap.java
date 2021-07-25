@@ -123,13 +123,7 @@ public class CommandDrmap implements TabExecutor {
             }
             final int finalRequiredAmount = requiredAmount;
 
-            int playerHas = 0;
-            for (ItemStack itemStack : player.getInventory().getContents()) {
-                if (itemStack != null && itemStack.getType() == Material.MAP) {
-                    playerHas += itemStack.getAmount();
-                }
-            }
-            if (playerHas < requiredAmount) {
+            if (!(playerHas(player, Material.MAP, requiredAmount))) {
                 Lang.send(sender, Lang.NOT_ENOUGH_MAPS);
                 return true;
             }
@@ -170,7 +164,9 @@ public class CommandDrmap implements TabExecutor {
                     map.setItemMeta(meta);
 
                     //Remove maps
-                    if (!(removeFromInventory(player, Material.MAP, finalRequiredAmount))) {
+                    if (playerHas(player, Material.MAP, finalRequiredAmount)) {
+                        removeFromInventory(player, Material.MAP, finalRequiredAmount);
+                    } else {
                         Lang.send(sender, Lang.NOT_ENOUGH_MAPS);
                         return;
                     }
@@ -225,7 +221,9 @@ public class CommandDrmap implements TabExecutor {
                 }
 
                 //Remove empty maps
-                if (!(removeFromInventory(player, Material.MAP, finalRequiredAmount))) {
+                if (playerHas(player, Material.MAP, finalRequiredAmount)) {
+                    removeFromInventory(player, Material.MAP, finalRequiredAmount);
+                } else {
                     Lang.send(sender, Lang.NOT_ENOUGH_MAPS);
                     return;
                 }
@@ -321,17 +319,16 @@ public class CommandDrmap implements TabExecutor {
         return false;
     }
 
-    public boolean removeFromInventory(Player player, Material material, int removeAmount) {
-        final int initialRemoveAmount = removeAmount;
+    public void removeFromInventory(Player player, Material material, int removeAmount) {
         for (ItemStack is : player.getInventory().getContents()) {
             if (removeAmount <= 0) {
-                return true;
+                return;
             }
             if (is != null) {
                 if (is.getType() == material) {
                     if (is.getAmount() >= removeAmount) {
                         is.setAmount(is.getAmount() - removeAmount);
-                        removeAmount = 0;
+                        return;
                     } else {
                         is.setAmount(0);
                         removeAmount -= is.getAmount();
@@ -339,16 +336,18 @@ public class CommandDrmap implements TabExecutor {
                 }
             }
         }
-        if (removeAmount == 0) {
-            return true;
-        } else {
-            // Give the removed maps back to the player.
-            // This should only happen if the player dropped
-            // items immediately after using the create command
-            Item drop = player.getWorld().dropItem(player.getLocation(), new ItemStack(material, initialRemoveAmount - removeAmount));
-            drop.setPickupDelay(0);
-            drop.setOwner(player.getUniqueId());
-            return false;
+    }
+
+    public boolean playerHas(Player player, Material material, int count) {
+        int playerHas = 0;
+        for (ItemStack itemStack : player.getInventory().getContents()) {
+            if (itemStack != null && itemStack.getType() == material) {
+                playerHas += itemStack.getAmount();
+                if (playerHas > count) {
+                    return true;
+                }
+            }
         }
+        return false;
     }
 }
