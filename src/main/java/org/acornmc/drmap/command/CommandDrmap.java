@@ -38,19 +38,43 @@ public class CommandDrmap implements TabExecutor {
         ArrayList<String> list = new ArrayList<>();
 
         if (args.length == 1) {
-            if (sender.hasPermission("drmap.create")) {
+            if (sender.hasPermission("drmap.command.create")) {
                 list.add("create");
             }
-            if (sender.hasPermission("drmap.reload")) {
+            if (sender.hasPermission("drmap.command.reload")) {
                 list.add("reload");
             }
-            if (sender.hasPermission("drmap.info")) {
+            if (sender.hasPermission("drmap.command.info")) {
                 list.add("info");
             }
-            if (sender.hasPermission("drmap.erase")) {
+            if (sender.hasPermission("drmap.command.erase")) {
                 list.add("erase");
             }
             return StringUtil.copyPartialMatches(args[0], list, new ArrayList<>());
+        } else if (args.length >= 3 && sender.hasPermission("drmap.command.create") && args[0].equalsIgnoreCase("create")) {
+            boolean includedWidth = false;
+            boolean includedHeight = false;
+            boolean includedBackground = false;
+            for (int i = 0; i < args.length - 1; i++) {
+                if (args[i].toLowerCase().startsWith("width:")) {
+                    includedWidth = true;
+                }
+                if (args[i].toLowerCase().startsWith("height:")) {
+                    includedHeight = true;
+                }
+                if (args[i].toLowerCase().startsWith("background:")) {
+                    includedBackground = true;
+                }
+            }
+            if (!includedWidth) {
+                list.add("width:");
+            }
+            if (!includedHeight) {
+                list.add("height:");
+            }
+            if (!includedBackground) {
+                list.add("background:");
+            }
         }
 
         return list;
@@ -64,7 +88,7 @@ public class CommandDrmap implements TabExecutor {
         }
 
         if (args[0].equalsIgnoreCase("reload")) {
-            if (!sender.hasPermission("drmap.reload")) {
+            if (!sender.hasPermission("drmap.command.reload")) {
                 Lang.send(sender, Lang.COMMAND_NO_PERMISSION);
                 return true;
             }
@@ -76,7 +100,7 @@ public class CommandDrmap implements TabExecutor {
         }
 
         if (args[0].equalsIgnoreCase("create") && args.length > 1) {
-            if (!sender.hasPermission("drmap.create")) {
+            if (!sender.hasPermission("drmap.command.create")) {
                 Lang.send(sender, Lang.COMMAND_NO_PERMISSION);
                 return true;
             }
@@ -100,14 +124,14 @@ public class CommandDrmap implements TabExecutor {
                     width = 1;
                     height = 1;
                 } else {
-                    if (args.length < 4) {
-                        return false;
-                    }
-                    try {
-                        width = Integer.parseInt(args[2]);
-                        height = Integer.parseInt(args[3]);
-                    } catch (Exception ignored) {
-                        // If they put invalid height/width, assume unstretched
+                    for (int i = 2; i < args.length; i++) {
+                        // TODO Rewrite this part and also add background support
+                        try {
+                            width = Integer.parseInt(args[2]);
+                            height = Integer.parseInt(args[3]);
+                        } catch (Exception ignored) {
+                            // If they put invalid height/width, assume unstretched
+                        }
                     }
                 }
             }
@@ -243,7 +267,7 @@ public class CommandDrmap implements TabExecutor {
         }
 
         if (args[0].equalsIgnoreCase("erase")) {
-            if (!sender.hasPermission("drmap.erase")) {
+            if (!sender.hasPermission("drmap.command.erase")) {
                 Lang.send(sender, Lang.COMMAND_NO_PERMISSION);
                 return true;
             }
@@ -275,7 +299,7 @@ public class CommandDrmap implements TabExecutor {
             return true;
         }
         if (args[0].equalsIgnoreCase("info") || args[0].equalsIgnoreCase("author")) {
-            if (!sender.hasPermission("drmap.info")) {
+            if (!sender.hasPermission("drmap.command.info")) {
                 Lang.send(sender, Lang.COMMAND_NO_PERMISSION);
                 return true;
             }
