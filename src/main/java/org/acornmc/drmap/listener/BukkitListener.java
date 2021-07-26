@@ -3,6 +3,7 @@ package org.acornmc.drmap.listener;
 import org.acornmc.drmap.DrMap;
 import org.acornmc.drmap.configuration.Lang;
 import org.acornmc.drmap.picture.PictureManager;
+import org.acornmc.drmap.picture.PictureMeta;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -78,6 +79,17 @@ public class BukkitListener implements Listener {
                 event.setCancelled(true);
                 Lang.send(player, Lang.ACTION_NO_PERMISSION);
             }
+            int[] parts = PictureMeta.getParts(container, plugin);
+            if (parts == null) {
+                return;
+            }
+            if (parts[2] == 0 && parts[3] == 0) {
+                return;
+            }
+            if (parts[0] != 0 || parts[1] != 0) {
+               return;
+            }
+            // Now try to place the splattermap
         }
     }
 }

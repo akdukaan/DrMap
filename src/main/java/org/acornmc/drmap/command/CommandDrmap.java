@@ -5,6 +5,7 @@ import org.acornmc.drmap.configuration.Config;
 import org.acornmc.drmap.configuration.Lang;
 import org.acornmc.drmap.picture.Picture;
 import org.acornmc.drmap.picture.PictureManager;
+import org.acornmc.drmap.picture.PictureMeta;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -353,9 +354,9 @@ public class CommandDrmap implements TabExecutor {
 
             PersistentDataContainer container = itemMeta.getPersistentDataContainer();
 
-            sendAuthor(sender, container);
-            sendCreation(sender, container);
-            sendPart(sender, container);
+            PictureMeta.sendAuthor(sender, container, plugin);
+            PictureMeta.sendCreation(sender, container, plugin);
+            PictureMeta.sendPart(sender, container, plugin);
             return true;
         }
         return false;
@@ -394,46 +395,5 @@ public class CommandDrmap implements TabExecutor {
             }
         }
         return false;
-    }
-
-    public void sendAuthor(CommandSender sender, PersistentDataContainer container) {
-        NamespacedKey keyAuthor = new NamespacedKey(plugin, "drmap-author");
-        String author = container.get(keyAuthor, PersistentDataType.STRING);
-        if (author == null) {
-            return;
-        }
-        UUID authorUUID = UUID.fromString(author);
-        String authorName = Bukkit.getOfflinePlayer(authorUUID).getName();
-        if (authorName == null) {
-            return;
-        }
-        String message = Lang.INFO_AUTHOR.replace("{author}", authorName);
-        Lang.send(sender, message);
-    }
-
-    public void sendCreation(CommandSender sender, PersistentDataContainer container) {
-        NamespacedKey keyCreation = new NamespacedKey(plugin, "drmap-creation");
-        try {
-            long creation = container.get(keyCreation, PersistentDataType.LONG);
-            Date date = new Date(creation * 1000L);
-            SimpleDateFormat dateFormat = new SimpleDateFormat(Config.TIME_FORMAT);
-            String formattedDate = dateFormat.format(date);
-            String message = Lang.INFO_CREATION.replace("{creation}", String.valueOf(formattedDate));
-            Lang.send(sender, message);
-        } catch (Exception ignored) {}
-    }
-
-    public void sendPart(CommandSender sender, PersistentDataContainer container) {
-        NamespacedKey keyPart = new NamespacedKey(plugin, "drmap-part");
-        int[] part = container.get(keyPart, PersistentDataType.INTEGER_ARRAY);
-        if (part == null) {
-            return;
-        }
-        String message = Lang.INFO_PART;
-        message = message.replace("{this-x}", String.valueOf(part[0]))
-                .replace("{this-y}", String.valueOf(part[1]))
-                .replace("{max-x}", String.valueOf(part[2]))
-                .replace("{max-y}", String.valueOf(part[3]));
-        Lang.send(sender, message);
     }
 }
