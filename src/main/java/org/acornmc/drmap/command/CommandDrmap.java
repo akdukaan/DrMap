@@ -21,7 +21,9 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.StringUtil;
 
+import javax.naming.Name;
 import java.awt.*;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -168,12 +170,14 @@ public class CommandDrmap implements TabExecutor {
             final int finalWidth = width;
             final int finalHeight = height;
 
+            long unixtime = System.currentTimeMillis() / 1000L;
+
             // This section is all for if they will do a proportional image
             if (finalWidth == 0) {
                 Color finalBackground = background;
                 CompletableFuture.supplyAsync(() -> PictureManager.INSTANCE.downloadProportionalImage(args[1], finalBackground)).whenCompleteAsync((Image image, Throwable exception) -> {
                     if (image == null) {
-                        plugin.getLogger().severe("Could not download image: " + args[1]);
+                        plugin.getLogger().warning("Could not download image: " + args[1]);
                         Lang.send(sender, Lang.ERROR_DOWNLOADING);
                         return;
                     }
@@ -181,7 +185,7 @@ public class CommandDrmap implements TabExecutor {
                     MapView mapView = Bukkit.createMap(Bukkit.getWorlds().get(0));
 
                     if (!PictureManager.INSTANCE.saveImage(image, mapView.getId())) {
-                        plugin.getLogger().severe("Could not save image to disk: " + args[1] + " -> " + mapView.getId() + ".png");
+                        plugin.getLogger().warning("Could not save image to disk: " + args[1] + " -> " + mapView.getId() + ".png");
                         Lang.send(sender, Lang.ERROR_DOWNLOADING);
                         return;
                     }
@@ -197,9 +201,15 @@ public class CommandDrmap implements TabExecutor {
                     }
                     meta.setMapView(picture.getMapView());
 
-                    // Mark the author
-                    NamespacedKey key = new NamespacedKey(plugin, "drmap-author");
-                    meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, player.getUniqueId().toString());
+                    // Mark the meta
+                    NamespacedKey keyAuthor = new NamespacedKey(plugin, "drmap-author");
+                    meta.getPersistentDataContainer().set(keyAuthor, PersistentDataType.STRING, player.getUniqueId().toString());
+                    NamespacedKey keyCreation = new NamespacedKey(plugin, "drmap-creation");
+                    meta.getPersistentDataContainer().set(keyCreation, PersistentDataType.LONG, unixtime);
+                    NamespacedKey keyPart = new NamespacedKey(plugin, "drmap-part");
+                    meta.getPersistentDataContainer().set(keyPart, PersistentDataType.INTEGER_ARRAY, new int[]{0,0,0,0});
+
+                    // Apply the meta changes
                     map.setItemMeta(meta);
 
                     //Remove maps
@@ -251,10 +261,15 @@ public class CommandDrmap implements TabExecutor {
                         }
                         meta.setMapView(picture.getMapView());
 
-                        // Mark the author
+                        // Mark the meta
                         NamespacedKey key = new NamespacedKey(plugin, "drmap-author");
                         meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, player.getUniqueId().toString());
+                        NamespacedKey keyCreation = new NamespacedKey(plugin, "drmap-creation");
+                        meta.getPersistentDataContainer().set(keyCreation, PersistentDataType.LONG, unixtime);
+                        NamespacedKey keyPart = new NamespacedKey(plugin, "drmap-part");
+                        meta.getPersistentDataContainer().set(keyPart, PersistentDataType.INTEGER_ARRAY, new int[]{j, i, images[0].length - 1, images.length - 1});
                         map.setItemMeta(meta);
+
                         maps.add(map);
                     }
                 }
@@ -329,30 +344,18 @@ public class CommandDrmap implements TabExecutor {
                 Lang.send(sender, Lang.NOT_DRMAP);
                 return true;
             }
-            NamespacedKey key = new NamespacedKey(plugin, "drmap-author");
+
             ItemMeta itemMeta = hand.getItemMeta();
             if (itemMeta == null) {
                 Lang.send(sender, Lang.NOT_DRMAP);
                 return true;
             }
+
             PersistentDataContainer container = itemMeta.getPersistentDataContainer();
-            if (!container.has(key, PersistentDataType.STRING)) {
-                Lang.send(sender, Lang.NOT_DRMAP);
-                return true;
-            }
-            String author = container.get(key, PersistentDataType.STRING);
-            if (author == null) {
-                Lang.send(sender, Lang.NOT_DRMAP);
-                return true;
-            }
-            UUID authorUUID = UUID.fromString(author);
-            String authorName = Bukkit.getOfflinePlayer(authorUUID).getName();
-            if (authorName == null) {
-                Lang.send(sender, Lang.NOT_DRMAP);
-                return true;
-            }
-            String message = Lang.AUTHOR.replace("{author}", authorName);
-            Lang.send(sender, message);
+
+            sendAuthor(sender, container);
+            sendCreation(sender, container);
+            sendPart(sender, container);
             return true;
         }
         return false;
@@ -388,5 +391,48 @@ public class CommandDrmap implements TabExecutor {
             }
         }
         return false;
+    }
+
+    public void sendAuthor(CommandSender sender, PersistentDataContainer container) {
+        NamespacedKey keyAuthor = new NamespacedKey(plugin, "drmap-author");
+        String author = container.get(keyAuthor, PersistentDataType.STRING);
+        if (author == null) {
+            return;
+        }
+
+        UUID authorUUID = UUID.fromString(author);
+        String authorName = Bukkit.getOfflinePlayer(authorUUID).getName();
+        if (authorName == null) {
+            return;
+        }
+
+        String message = Lang.INFO_AUTHOR.replace("{author}", authorName);
+        Lang.send(sender, message);
+    }
+
+    public void sendCreation(CommandSender sender, PersistentDataContainer container) {
+
+        NamespacedKey keyCreation = new NamespacedKey(plugin, "drmap-creation");
+        long creation = container.get(keyCreation, PersistentDataType.LONG);
+
+        Date date = new Date(creation * 1000L);
+        SimpleDateFormat dateFormat = new SimpleDateFormat(Config.TIME_FORMAT);
+        String formattedDate = dateFormat.format(date);
+        String message = Lang.INFO_CREATION.replace("{creation}", String.valueOf(formattedDate));
+        Lang.send(sender, message);
+    }
+
+    public void sendPart(CommandSender sender, PersistentDataContainer container) {
+        NamespacedKey keyPart = new NamespacedKey(plugin, "drmap-part");
+        int[] part = container.get(keyPart, PersistentDataType.INTEGER_ARRAY);
+        if (part == null) {
+            return;
+        }
+        String message = Lang.INFO_PART;
+        message = message.replace("{this-x}", String.valueOf(part[0]))
+                .replace("{this-y}", String.valueOf(part[1]))
+                .replace("{max-x}", String.valueOf(part[2]))
+                .replace("{max-y}", String.valueOf(part[3]));
+        Lang.send(sender, message);
     }
 }

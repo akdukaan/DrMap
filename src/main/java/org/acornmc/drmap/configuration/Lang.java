@@ -22,7 +22,9 @@ public class Lang {
     public static String MUST_HAVE_MAP = "&4You must have an empty map in your inventory.";
     public static String NOT_PLAYER = "&4This command can only be executed by players.";
     public static String NOT_DRMAP = "&4You must hold a DrMap to use that command.";
-    public static String AUTHOR  = "&aThis map was created by {author}.";
+    public static String INFO_AUTHOR = "&aThis map was created by {author}.";
+    public static String INFO_CREATION = "&aThis map was created on {creation}.";
+    public static String INFO_PART = "&aThis map is part ({this-x} {this-y}) of ({max-x} {max-y}).";
     public static String NOT_ENOUGH_MAPS = "&4You do not have {required} empty maps for an image of that size.";
 
     private static void init() {
@@ -33,7 +35,9 @@ public class Lang {
         MUST_HAVE_MAP = getString("must-have-map", MUST_HAVE_MAP);
         NOT_PLAYER = getString("not-player", NOT_PLAYER);
         NOT_DRMAP = getString("not-drmap", NOT_DRMAP);
-        AUTHOR = getString("author", AUTHOR);
+        INFO_AUTHOR = getString("info-author", INFO_AUTHOR);
+        INFO_CREATION = getString("info-creation", INFO_CREATION);
+        INFO_PART = getString("info-part", INFO_PART);
         NOT_ENOUGH_MAPS = getString("not-enough-maps", NOT_ENOUGH_MAPS);
     }
 
