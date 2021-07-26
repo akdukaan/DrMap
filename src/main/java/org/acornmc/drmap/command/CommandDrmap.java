@@ -381,11 +381,14 @@ public class CommandDrmap implements TabExecutor {
     }
 
     public boolean playerHas(Player player, Material material, int count) {
+        if (count == 0) {
+            return true;
+        }
         int playerHas = 0;
         for (ItemStack itemStack : player.getInventory().getContents()) {
             if (itemStack != null && itemStack.getType() == material) {
                 playerHas += itemStack.getAmount();
-                if (playerHas > count) {
+                if (playerHas >= count) {
                     return true;
                 }
             }
@@ -399,27 +402,25 @@ public class CommandDrmap implements TabExecutor {
         if (author == null) {
             return;
         }
-
         UUID authorUUID = UUID.fromString(author);
         String authorName = Bukkit.getOfflinePlayer(authorUUID).getName();
         if (authorName == null) {
             return;
         }
-
         String message = Lang.INFO_AUTHOR.replace("{author}", authorName);
         Lang.send(sender, message);
     }
 
     public void sendCreation(CommandSender sender, PersistentDataContainer container) {
-
         NamespacedKey keyCreation = new NamespacedKey(plugin, "drmap-creation");
-        long creation = container.get(keyCreation, PersistentDataType.LONG);
-
-        Date date = new Date(creation * 1000L);
-        SimpleDateFormat dateFormat = new SimpleDateFormat(Config.TIME_FORMAT);
-        String formattedDate = dateFormat.format(date);
-        String message = Lang.INFO_CREATION.replace("{creation}", String.valueOf(formattedDate));
-        Lang.send(sender, message);
+        try {
+            long creation = container.get(keyCreation, PersistentDataType.LONG);
+            Date date = new Date(creation * 1000L);
+            SimpleDateFormat dateFormat = new SimpleDateFormat(Config.TIME_FORMAT);
+            String formattedDate = dateFormat.format(date);
+            String message = Lang.INFO_CREATION.replace("{creation}", String.valueOf(formattedDate));
+            Lang.send(sender, message);
+        } catch (Exception ignored) {}
     }
 
     public void sendPart(CommandSender sender, PersistentDataContainer container) {
