@@ -267,7 +267,7 @@ public class CommandDrmap implements TabExecutor {
                         NamespacedKey keyCreation = new NamespacedKey(plugin, "drmap-creation");
                         meta.getPersistentDataContainer().set(keyCreation, PersistentDataType.LONG, unixtime);
                         NamespacedKey keyPart = new NamespacedKey(plugin, "drmap-part");
-                        meta.getPersistentDataContainer().set(keyPart, PersistentDataType.INTEGER_ARRAY, new int[]{j, i, images[0].length - 1, images.length - 1});
+                        meta.getPersistentDataContainer().set(keyPart, PersistentDataType.INTEGER_ARRAY, new int[]{i, j, images.length - 1, images[0].length - 1});
                         map.setItemMeta(meta);
 
                         maps.add(map);
