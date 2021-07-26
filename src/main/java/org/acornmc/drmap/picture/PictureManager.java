@@ -66,7 +66,7 @@ public class PictureManager {
         return null;
     }
 
-    public Image downloadProportionalImage(String link) {
+    public Image downloadProportionalImage(String link, Color finalBackground) {
         BufferedImage image;
         URLConnection con = null;
         InputStream in = null;
@@ -81,7 +81,11 @@ public class PictureManager {
                 Image resizedImage = image.getScaledInstance(128*image.getWidth()/image.getHeight(), 128, 1);
                 BufferedImage newImage = new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);
                 Graphics2D g2d = newImage.createGraphics();
-                g2d.setComposite(AlphaComposite.Clear);
+                if (finalBackground == null) {
+                    g2d.setComposite(AlphaComposite.Clear);
+                } else {
+                    g2d.setPaint(finalBackground);
+                }
                 g2d.fillRect(0, 0, 128, 128);
                 g2d.setComposite(AlphaComposite.Src);
                 g2d.drawImage(resizedImage, ((128-resizedImage.getWidth(null))/2), ((128-resizedImage.getHeight(null))/2), null);
@@ -91,7 +95,11 @@ public class PictureManager {
                 Image resizedImage = image.getScaledInstance(128, 128*image.getHeight()/image.getWidth(), 1);
                 BufferedImage newImage = new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);
                 Graphics2D g2d = newImage.createGraphics();
-                g2d.setComposite(AlphaComposite.Clear);
+                if (finalBackground == null) {
+                    g2d.setComposite(AlphaComposite.Clear);
+                } else {
+                    g2d.setPaint(finalBackground);
+                }
                 g2d.fillRect(0, 0, 128, 128);
                 g2d.setComposite(AlphaComposite.Src);
                 g2d.drawImage(resizedImage, ((128-resizedImage.getWidth(null))/2), ((128-resizedImage.getHeight(null))/2), null);

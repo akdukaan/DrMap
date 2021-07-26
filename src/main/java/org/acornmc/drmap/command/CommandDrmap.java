@@ -66,15 +66,16 @@ public class CommandDrmap implements TabExecutor {
                     includedBackground = true;
                 }
             }
-            if (!includedWidth) {
+            if (!includedWidth && !includedBackground) {
                 list.add("width:");
             }
-            if (!includedHeight) {
+            if (!includedHeight && !includedBackground) {
                 list.add("height:");
             }
-            if (!includedBackground) {
+            if (!includedBackground && !includedHeight && !includedWidth) {
                 list.add("background:");
             }
+            return StringUtil.copyPartialMatches(args[args.length - 1], list, new ArrayList<>());
         }
 
         return list;
@@ -119,18 +120,26 @@ public class CommandDrmap implements TabExecutor {
 
             int width = 0;
             int height = 0;
+            Color background = null;
+
             if (args.length > 2) {
                 if (args[2].equalsIgnoreCase("-s")) {
                     width = 1;
                     height = 1;
                 } else {
                     for (int i = 2; i < args.length; i++) {
-                        // TODO Rewrite this part and also add background support
-                        try {
-                            width = Integer.parseInt(args[2]);
-                            height = Integer.parseInt(args[3]);
-                        } catch (Exception ignored) {
-                            // If they put invalid height/width, assume unstretched
+                        if (args[i].toLowerCase().startsWith("width:")) {
+                            try {
+                                width = Integer.parseInt(args[i].toLowerCase().replaceFirst("width:", ""));
+                            } catch (Exception ignored) {}
+                        } else if (args[i].toLowerCase().startsWith("height:")) {
+                            try {
+                                height = Integer.parseInt(args[i].toLowerCase().replaceFirst("height:", ""));
+                            } catch (Exception ignored) {}
+                        } else if (args[i].toLowerCase().startsWith("background:")) {
+                            try {
+                                background = Color.decode(args[i].toLowerCase().replaceFirst("background:", ""));
+                            } catch (Exception ignored) {}
                         }
                     }
                 }
@@ -141,22 +150,28 @@ public class CommandDrmap implements TabExecutor {
                 height = 0;
             }
 
+            // Calculate required amount
             int requiredAmount = width * height;
-            if (requiredAmount == 0) {
+            if (requiredAmount <= 0) {
                 requiredAmount = 1;
             }
             final int finalRequiredAmount = requiredAmount;
 
+            // Check that they have enough
+            // We will check again after the image is downloaded,
+            // but I don't want to download images if they don't even have enough maps
             if (!(playerHas(player, Material.MAP, requiredAmount))) {
-                Lang.send(sender, Lang.NOT_ENOUGH_MAPS);
+                Lang.send(sender, Lang.NOT_ENOUGH_MAPS.replace("{required}", String.valueOf(requiredAmount)));
                 return true;
             }
 
             final int finalWidth = width;
             final int finalHeight = height;
 
+            // This section is all for if they will do a proportional image
             if (finalWidth == 0) {
-                CompletableFuture.supplyAsync(() -> PictureManager.INSTANCE.downloadProportionalImage(args[1])).whenCompleteAsync((Image image, Throwable exception) -> {
+                Color finalBackground = background;
+                CompletableFuture.supplyAsync(() -> PictureManager.INSTANCE.downloadProportionalImage(args[1], finalBackground)).whenCompleteAsync((Image image, Throwable exception) -> {
                     if (image == null) {
                         plugin.getLogger().severe("Could not download image: " + args[1]);
                         Lang.send(sender, Lang.ERROR_DOWNLOADING);
@@ -191,7 +206,7 @@ public class CommandDrmap implements TabExecutor {
                     if (playerHas(player, Material.MAP, finalRequiredAmount)) {
                         removeFromInventory(player, Material.MAP, finalRequiredAmount);
                     } else {
-                        Lang.send(sender, Lang.NOT_ENOUGH_MAPS);
+                        Lang.send(sender, Lang.NOT_ENOUGH_MAPS.replace("{required}", String.valueOf(finalRequiredAmount)));
                         return;
                     }
 
@@ -248,7 +263,7 @@ public class CommandDrmap implements TabExecutor {
                 if (playerHas(player, Material.MAP, finalRequiredAmount)) {
                     removeFromInventory(player, Material.MAP, finalRequiredAmount);
                 } else {
-                    Lang.send(sender, Lang.NOT_ENOUGH_MAPS);
+                    Lang.send(sender, Lang.NOT_ENOUGH_MAPS.replace("{required}", String.valueOf(finalRequiredAmount)));
                     return;
                 }
 
