@@ -22,9 +22,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.StringUtil;
 
-import javax.naming.Name;
 import java.awt.*;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -209,6 +207,8 @@ public class CommandDrmap implements TabExecutor {
                     meta.getPersistentDataContainer().set(keyCreation, PersistentDataType.LONG, unixtime);
                     NamespacedKey keyPart = new NamespacedKey(plugin, "drmap-part");
                     meta.getPersistentDataContainer().set(keyPart, PersistentDataType.INTEGER_ARRAY, new int[]{0,0,0,0});
+                    NamespacedKey keySource = new NamespacedKey(plugin, "drmap-source");
+                    meta.getPersistentDataContainer().set(keySource, PersistentDataType.STRING, args[1]);
 
                     // Apply the meta changes
                     map.setItemMeta(meta);
@@ -269,6 +269,8 @@ public class CommandDrmap implements TabExecutor {
                         meta.getPersistentDataContainer().set(keyCreation, PersistentDataType.LONG, unixtime);
                         NamespacedKey keyPart = new NamespacedKey(plugin, "drmap-part");
                         meta.getPersistentDataContainer().set(keyPart, PersistentDataType.INTEGER_ARRAY, new int[]{i, j, images.length - 1, images[0].length - 1});
+                        NamespacedKey keySource = new NamespacedKey(plugin, "drmap-source");
+                        meta.getPersistentDataContainer().set(keySource, PersistentDataType.STRING, args[1]);
                         map.setItemMeta(meta);
 
                         maps.add(map);
