@@ -357,6 +357,7 @@ public class CommandDrmap implements TabExecutor {
             PictureMeta.sendAuthor(sender, container, plugin);
             PictureMeta.sendCreation(sender, container, plugin);
             PictureMeta.sendPart(sender, container, plugin);
+            PictureMeta.sendSource(sender, container, plugin);
             return true;
         }
         return false;
