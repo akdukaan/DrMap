@@ -25,7 +25,7 @@ public class Lang {
     public static String INFO_AUTHOR = "&aThis map was created by {author}.";
     public static String INFO_CREATION = "&aThis map was created on {creation}.";
     public static String INFO_PART = "&aThis map is part ({this-x} {this-y}) of ({max-x} {max-y}).";
-    public static String INFO_SOURCE = "&aThis map image came from {source}";
+    public static String INFO_SOURCE = "&aThis image is from {source}.";
     public static String NOT_ENOUGH_MAPS = "&4You do not have {required} empty maps for an image of that size.";
 
     private static void init() {
