@@ -30,7 +30,7 @@ public class PictureManager {
         pictures.forEach(picture -> player.sendMap(picture.getMapView()));
     }
 
-    public Image[][] downloadStretchedImage(String link, int width, int height) {
+    public Image[][] downloadStretchedImage(String link, int width, int height, Color finalBackground) {
         Image[][] images = new Image[width][height];
         BufferedImage image;
         URLConnection con = null;
@@ -45,7 +45,21 @@ public class PictureManager {
             for (int h = 0; h < height; h++) {
                 for (int w = 0; w < width; w++) {
                     BufferedImage bufferedImage = image.getSubimage(w * image.getWidth() / width, h * image.getHeight() / height, image.getWidth() / width, image.getHeight() / height);
-                    images[w][h] = bufferedImage.getScaledInstance(128, 128, 1);
+                    Image stretchedPart = bufferedImage.getScaledInstance(128, 128, 1);
+
+                    BufferedImage newImage = new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);
+                    Graphics2D g2d = newImage.createGraphics();
+                    if (finalBackground == null) {
+                        g2d.setComposite(AlphaComposite.Clear);
+                    } else {
+                        g2d.setPaint(finalBackground);
+                    }
+                    g2d.fillRect(0, 0, 128, 128);
+                    g2d.setComposite(AlphaComposite.Src);
+                    g2d.drawImage(stretchedPart, 0, 0, null);
+                    g2d.dispose();
+
+                    images[w][h] = newImage.getScaledInstance(128, 128, 1);
                 }
             }
             return images;

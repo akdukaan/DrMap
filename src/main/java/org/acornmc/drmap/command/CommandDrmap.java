@@ -67,13 +67,13 @@ public class CommandDrmap implements TabExecutor {
                     includedBackground = true;
                 }
             }
-            if (!includedWidth && !includedBackground) {
+            if (!includedWidth) {
                 list.add("width:");
             }
-            if (!includedHeight && !includedBackground) {
+            if (!includedHeight) {
                 list.add("height:");
             }
-            if (!includedBackground && !includedHeight && !includedWidth) {
+            if (!includedBackground) {
                 list.add("background:");
             }
             return StringUtil.copyPartialMatches(args[args.length - 1], list, new ArrayList<>());
@@ -170,10 +170,10 @@ public class CommandDrmap implements TabExecutor {
             final int finalHeight = height;
 
             long unixtime = System.currentTimeMillis() / 1000L;
+            Color finalBackground = background;
 
             // This section is all for if they will do a proportional image
             if (finalWidth == 0) {
-                Color finalBackground = background;
                 CompletableFuture.supplyAsync(() -> PictureManager.INSTANCE.downloadProportionalImage(args[1], finalBackground)).whenCompleteAsync((Image image, Throwable exception) -> {
                     if (image == null) {
                         plugin.getLogger().warning("Could not download image: " + args[1]);
@@ -234,7 +234,7 @@ public class CommandDrmap implements TabExecutor {
             }
 
             // If stretching the map
-            CompletableFuture.supplyAsync(() -> PictureManager.INSTANCE.downloadStretchedImage(args[1], finalWidth, finalHeight)).whenCompleteAsync((Image[][] images, Throwable exception) -> {
+            CompletableFuture.supplyAsync(() -> PictureManager.INSTANCE.downloadStretchedImage(args[1], finalWidth, finalHeight, finalBackground)).whenCompleteAsync((Image[][] images, Throwable exception) -> {
                 if (images == null) {
                     plugin.getLogger().severe("Could not download image: " + args[1]);
                     Lang.send(sender, Lang.ERROR_DOWNLOADING);
