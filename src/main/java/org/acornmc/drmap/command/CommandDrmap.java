@@ -145,10 +145,19 @@ public class CommandDrmap implements TabExecutor {
                     }
                 }
             }
-            // If they put invalid height/width, assume unstretched
-            if (width <= 0 || height <= 0) {
+            // If they put invalid height/width, assume 0
+            if (width < 0) {
                 width = 0;
+            }
+            if (height < 0) {
                 height = 0;
+            }
+
+            if (width > 0 && height == 0) {
+                height = 1;
+            }
+            if (height > 0 && width == 0) {
+                width = 1;
             }
 
             // Calculate required amount

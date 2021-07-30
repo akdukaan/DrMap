@@ -51,11 +51,13 @@ public class PictureManager {
                     Graphics2D g2d = newImage.createGraphics();
                     if (finalBackground == null) {
                         g2d.setComposite(AlphaComposite.Clear);
+                        g2d.fillRect(0, 0, 128, 128);
+                        g2d.setComposite(AlphaComposite.Src);
                     } else {
                         g2d.setPaint(finalBackground);
+                        g2d.fillRect(0, 0, 128, 128);
+                        g2d.setComposite(AlphaComposite.SrcAtop);
                     }
-                    g2d.fillRect(0, 0, 128, 128);
-                    g2d.setComposite(AlphaComposite.SrcAtop);
                     g2d.drawImage(stretchedPart, 0, 0, null);
                     g2d.dispose();
 
@@ -97,11 +99,14 @@ public class PictureManager {
                 Graphics2D g2d = newImage.createGraphics();
                 if (finalBackground == null) {
                     g2d.setComposite(AlphaComposite.Clear);
+                    g2d.fillRect(0, 0, 128, 128);
+                    g2d.setComposite(AlphaComposite.Src);
                 } else {
                     g2d.setPaint(finalBackground);
+                    g2d.fillRect(0, 0, 128, 128);
+                    g2d.setComposite(AlphaComposite.SrcAtop);
                 }
-                g2d.fillRect(0, 0, 128, 128);
-                g2d.setComposite(AlphaComposite.SrcAtop);
+
                 g2d.drawImage(resizedImage, ((128-resizedImage.getWidth(null))/2), ((128-resizedImage.getHeight(null))/2), null);
                 g2d.dispose();
                 return newImage;
