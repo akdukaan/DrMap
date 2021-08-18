@@ -34,7 +34,7 @@ permissions:
     description: erase drmaps
     children:
       drmap.command.erase: true
-  drmap.commmand.erase:
+  drmap.command.erase:
     default: op
     description: erase drmaps
     children:
