@@ -55,3 +55,6 @@ permissions:
     description: get info on drmaps
     children:
       drmap.command: true
+  drmap.cartography:
+    default: op
+    description: manipulate drmaps in cartography table
