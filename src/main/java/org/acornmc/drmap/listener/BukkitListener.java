@@ -105,7 +105,7 @@ public class BukkitListener implements Listener {
         if (!(human instanceof Player)) {
             return;
         }
-        Player player = (Player) event.getWhoClicked();
+        Player player = (Player) human;
         if (!player.hasPermission("drmap.cartography")) {
             event.setCancelled(true);
             Lang.send(player, Lang.CARTOGRAPHY_NO_PERMISSION);
