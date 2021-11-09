@@ -90,22 +90,25 @@ public class BukkitListener implements Listener {
         if (!(event.getClickedInventory() instanceof CartographyInventory)) {
             return;
         }
-        if (event.getSlot() != 0) {
+        if (event.getSlot() != 2) {
+            return;
+        }
+        CartographyInventory cartographyInventory = (CartographyInventory) event.getClickedInventory();
+        ItemStack itemStack = cartographyInventory.getItem(0);
+        if (itemStack == null) {
+            return;
+        }
+        if (!Util.isDrMap(itemStack)) {
             return;
         }
         HumanEntity human = event.getWhoClicked();
         if (!(human instanceof Player)) {
             return;
         }
-        ItemStack cursor = event.getCursor();
-        if (cursor == null) {
-            return;
+        Player player = (Player) event.getWhoClicked();
+        if (!player.hasPermission("drmap.cartography")) {
+            event.setCancelled(true);
+            Lang.send(player, Lang.CARTOGRAPHY_NO_PERMISSION);
         }
-        if (!Util.isDrMap(cursor)) {
-            return;
-        }
-        Player player = (Player) human;
-        player.sendMessage( "Cannot use DrMaps in cartography table");
-        event.setCancelled(true);
     }
 }
