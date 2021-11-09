@@ -6,7 +6,7 @@
 
     <groupId>org.acornmc</groupId>
     <artifactId>DrMap</artifactId>
-    <version>1.0.6-SNAPSHOT</version>
+    <version>1.0.6</version>
     <packaging>jar</packaging>
 
     <name>DrMap</name>
