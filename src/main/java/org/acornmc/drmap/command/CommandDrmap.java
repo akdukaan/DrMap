@@ -1,6 +1,7 @@
 package org.acornmc.drmap.command;
 
 import org.acornmc.drmap.DrMap;
+import org.acornmc.drmap.Util;
 import org.acornmc.drmap.configuration.Config;
 import org.acornmc.drmap.configuration.Lang;
 import org.acornmc.drmap.picture.Picture;
@@ -319,19 +320,7 @@ public class CommandDrmap implements TabExecutor {
             }
             Player player = (Player) sender;
             ItemStack hand = player.getInventory().getItemInMainHand();
-            Material usingMaterial = hand.getType();
-            if (usingMaterial != Material.FILLED_MAP) {
-                Lang.send(sender, Lang.NOT_DRMAP);
-                return true;
-            }
-            ItemMeta itemMeta = hand.getItemMeta();
-            if (itemMeta == null) {
-                Lang.send(sender, Lang.NOT_DRMAP);
-                return true;
-            }
-            NamespacedKey key = new NamespacedKey(plugin, "drmap-author");
-            PersistentDataContainer container = itemMeta.getPersistentDataContainer();
-            if (!container.has(key, PersistentDataType.STRING)) {
+            if (!Util.isDrMap(hand)) {
                 Lang.send(sender, Lang.NOT_DRMAP);
                 return true;
             }

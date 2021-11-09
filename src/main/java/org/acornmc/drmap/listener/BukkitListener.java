@@ -1,19 +1,23 @@
 package org.acornmc.drmap.listener;
 
 import org.acornmc.drmap.DrMap;
+import org.acornmc.drmap.Util;
 import org.acornmc.drmap.configuration.Lang;
 import org.acornmc.drmap.picture.PictureManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.CartographyInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -79,5 +83,29 @@ public class BukkitListener implements Listener {
                 Lang.send(player, Lang.ACTION_NO_PERMISSION);
             }
         }
+    }
+
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event) {
+        if (!(event.getClickedInventory() instanceof CartographyInventory)) {
+            return;
+        }
+        if (event.getSlot() != 0) {
+            return;
+        }
+        HumanEntity human = event.getWhoClicked();
+        if (!(human instanceof Player)) {
+            return;
+        }
+        ItemStack cursor = event.getCursor();
+        if (cursor == null) {
+            return;
+        }
+        if (!Util.isDrMap(cursor)) {
+            return;
+        }
+        Player player = (Player) human;
+        player.sendMessage( "Cannot use DrMaps in cartography table");
+        event.setCancelled(true);
     }
 }
