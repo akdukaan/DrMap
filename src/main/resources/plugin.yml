@@ -9,41 +9,21 @@ commands:
     permission: drmap.command
     usage: "/<command> create <url> [params]\n/<command> reload\n/<command> erase\n/<command> info"
 permissions:
-  drmap.create:
-    default: op
-    description: create drmaps
-    children:
-      drmap.command.create: true
   drmap.command.create:
     default: op
     description: create drmaps
     children:
       drmap.command: true
-  drmap.reload:
-    default: op
-    description: reload plugin
-    children:
-      drmap.command.reload: true
   drmap.command.reload:
     default: op
     description: reload plugin
     children:
       drmap.command: true
-  drmap.erase:
-    default: op
-    description: erase drmaps
-    children:
-      drmap.command.erase: true
   drmap.command.erase:
     default: op
     description: erase drmaps
     children:
       drmap.command: true
-  drmap.author:
-    default: op
-    description: info on who created drmaps
-    children:
-      drmap.command.info: true
   drmap.place:
     default: op
     description: place drmaps in item frames
