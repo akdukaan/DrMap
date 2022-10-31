@@ -24,6 +24,11 @@ permissions:
     description: erase drmaps
     children:
       drmap.command: true
+  drmap.command.update:
+    default: op
+    description: update drmaps
+    children:
+      drmap.command: true
   drmap.place:
     default: op
     description: place drmaps in item frames

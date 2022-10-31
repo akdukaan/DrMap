@@ -9,7 +9,10 @@ public class Picture {
 
     public Picture(java.awt.Image image, MapView mapView) {
         this.mapView = mapView;
+        updateWithImage(image);
+    }
 
+    public void updateWithImage(java.awt.Image image) {
         for (MapRenderer render : mapView.getRenderers()) {
             mapView.removeRenderer(render);
         }

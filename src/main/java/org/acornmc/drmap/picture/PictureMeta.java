@@ -13,10 +13,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.awt.Color;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
+import java.util.stream.IntStream;
 
 public class PictureMeta {
 
@@ -96,6 +98,31 @@ public class PictureMeta {
     public static String getSource(PersistentDataContainer container, DrMap plugin) {
         NamespacedKey keySource = new NamespacedKey(plugin, "drmap-source");
         return container.get(keySource, PersistentDataType.STRING);
+    }
+
+    public static int[] getIds(PersistentDataContainer container, int mapId, DrMap plugin) {
+        NamespacedKey keyIds = new NamespacedKey(plugin, "drmap-ids");
+        int[] ids = container.get(keyIds, PersistentDataType.INTEGER_ARRAY);
+        if (ids != null) {
+            return ids;
+        }
+        int[] parts = getParts(container, plugin);
+        int width = parts[2] + 1;
+        int start = mapId - (parts[0] + parts[1] * width);
+        int end = start + (width * (parts[3] + 1));
+        return IntStream.range(start, end).toArray();
+    }
+
+    public static boolean isProportion(PersistentDataContainer container, DrMap plugin) {
+        NamespacedKey keyProportion = new NamespacedKey(plugin, "drmap-proportion");
+        Byte value = container.get(keyProportion, PersistentDataType.BYTE);
+        return value != null && value != 0;
+    }
+
+    public static Color getBackground(PersistentDataContainer container, DrMap plugin) {
+        NamespacedKey keyBackground = new NamespacedKey(plugin, "drmap-background");
+        int[] value = container.get(keyBackground, PersistentDataType.INTEGER_ARRAY);
+        return value == null ? null : new Color(value[0], value[1], value[2], value[3]);
     }
 
     public static boolean playerHasAllParts(PersistentDataContainer container, Player player, DrMap plugin) {
