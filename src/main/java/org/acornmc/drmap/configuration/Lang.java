@@ -19,6 +19,7 @@ public class Lang {
     public static String COMMAND_NO_PERMISSION = "&4You do not have permission for that command.";
     public static String ERROR_DOWNLOADING = "&4Could not download image.";
     public static String IMAGE_CREATED = "&aDrMap created.";
+    public static String IMAGE_UPDATED = "&aDrMap updated.";
     public static String INFO_AUTHOR = "&aThis map was created by {author}.";
     public static String INFO_CREATION = "&aThis map was created on {creation}.";
     public static String INFO_PART = "&aThis map is part ({this-x} {this-y}) of ({max-x} {max-y}).";
@@ -33,6 +34,7 @@ public class Lang {
         ACTION_NO_PERMISSION = getString("action-no-permission", ACTION_NO_PERMISSION);
         ERROR_DOWNLOADING = getString("error", ERROR_DOWNLOADING);
         IMAGE_CREATED = getString("image-created", IMAGE_CREATED);
+        IMAGE_UPDATED = getString("image-updated", IMAGE_UPDATED);
         MUST_HAVE_MAP = getString("must-have-map", MUST_HAVE_MAP);
         NOT_PLAYER = getString("not-player", NOT_PLAYER);
         NOT_DRMAP = getString("not-drmap", NOT_DRMAP);

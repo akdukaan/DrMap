@@ -8,6 +8,7 @@ import org.acornmc.drmap.picture.Picture;
 import org.acornmc.drmap.picture.PictureManager;
 import org.acornmc.drmap.picture.PictureMeta;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
@@ -51,6 +52,9 @@ public class CommandDrmap implements TabExecutor {
             }
             if (sender.hasPermission("drmap.command.erase")) {
                 list.add("erase");
+            }
+            if (sender.hasPermission("drmap.command.update")) {
+                list.add("update");
             }
             return StringUtil.copyPartialMatches(args[0], list, new ArrayList<>());
         } else if (args.length >= 3 && sender.hasPermission("drmap.command.create") && args[0].equalsIgnoreCase("create")) {
@@ -115,7 +119,7 @@ public class CommandDrmap implements TabExecutor {
 
             // Check if they have a map
             Player player = (Player) sender;
-            if (!player.getInventory().contains(Material.MAP)) {
+            if (!playerWithCheats(player) && !player.getInventory().contains(Material.MAP)) {
                 Lang.send(sender, Lang.MUST_HAVE_MAP);
                 return true;
             }
@@ -171,7 +175,7 @@ public class CommandDrmap implements TabExecutor {
             // Check that they have enough
             // We will check again after the image is downloaded,
             // but I don't want to download images if they don't even have enough maps
-            if (!(playerHas(player, Material.MAP, requiredAmount))) {
+            if (!playerWithCheats(player) && !(playerHas(player, Material.MAP, requiredAmount))) {
                 Lang.send(sender, Lang.NOT_ENOUGH_MAPS.replace("{required}", String.valueOf(requiredAmount)));
                 return true;
             }
@@ -219,16 +223,26 @@ public class CommandDrmap implements TabExecutor {
                     meta.getPersistentDataContainer().set(keyPart, PersistentDataType.INTEGER_ARRAY, new int[]{0,0,0,0});
                     NamespacedKey keySource = new NamespacedKey(plugin, "drmap-source");
                     meta.getPersistentDataContainer().set(keySource, PersistentDataType.STRING, args[1]);
+                    NamespacedKey keyProportion = new NamespacedKey(plugin, "drmap-proportion");
+                    meta.getPersistentDataContainer().set(keyProportion, PersistentDataType.BYTE, (byte) 1);
+                    NamespacedKey keyIds = new NamespacedKey(plugin, "drmap-ids");
+                    meta.getPersistentDataContainer().set(keyIds, PersistentDataType.INTEGER_ARRAY, new int[]{mapView.getId()});
+                    if (finalBackground != null) {
+                        NamespacedKey keyBackground = new NamespacedKey(plugin, "drmap-background");
+                        meta.getPersistentDataContainer().set(keyBackground, PersistentDataType.INTEGER_ARRAY, new int[]{finalBackground.getRed(), finalBackground.getGreen(), finalBackground.getBlue(), finalBackground.getAlpha()});
+                    }
 
                     // Apply the meta changes
                     map.setItemMeta(meta);
 
-                    //Remove maps
-                    if (playerHas(player, Material.MAP, finalRequiredAmount)) {
-                        removeFromInventory(player, Material.MAP, finalRequiredAmount);
-                    } else {
-                        Lang.send(sender, Lang.NOT_ENOUGH_MAPS.replace("{required}", String.valueOf(finalRequiredAmount)));
-                        return;
+                    //Remove maps if not in creative
+                    if (!playerWithCheats(player)) {
+                        if (playerHas(player, Material.MAP, finalRequiredAmount)) {
+                            removeFromInventory(player, Material.MAP, finalRequiredAmount);
+                        } else {
+                            Lang.send(sender, Lang.NOT_ENOUGH_MAPS.replace("{required}", String.valueOf(finalRequiredAmount)));
+                            return;
+                        }
                     }
 
                     // Give map
@@ -252,6 +266,7 @@ public class CommandDrmap implements TabExecutor {
                 }
 
                 List<ItemStack> maps = new LinkedList<>();
+                List<Integer> ids = new LinkedList<>();
                 for (int j = 0; j < images[0].length; j++) {
                     for (int i = 0; i < images.length; i++) {
                         MapView mapView = Bukkit.createMap(Bukkit.getWorlds().get(0));
@@ -281,18 +296,35 @@ public class CommandDrmap implements TabExecutor {
                         meta.getPersistentDataContainer().set(keyPart, PersistentDataType.INTEGER_ARRAY, new int[]{i, j, images.length - 1, images[0].length - 1});
                         NamespacedKey keySource = new NamespacedKey(plugin, "drmap-source");
                         meta.getPersistentDataContainer().set(keySource, PersistentDataType.STRING, args[1]);
+                        NamespacedKey keyProportion = new NamespacedKey(plugin, "drmap-proportion");
+                        meta.getPersistentDataContainer().set(keyProportion, PersistentDataType.BYTE, (byte) 0);
+                        if (finalBackground != null) {
+                            NamespacedKey keyBackground = new NamespacedKey(plugin, "drmap-background");
+                            meta.getPersistentDataContainer().set(keyBackground, PersistentDataType.INTEGER_ARRAY, new int[]{finalBackground.getRed(), finalBackground.getGreen(), finalBackground.getBlue(), finalBackground.getAlpha()});
+                        }
+
                         map.setItemMeta(meta);
 
                         maps.add(map);
+                        ids.add(mapView.getId());
                     }
+                }
+                NamespacedKey keyIds = new NamespacedKey(plugin, "drmap-ids");
+                int[] idsArray = ids.stream().mapToInt(i -> i).toArray();
+                for (ItemStack map : maps) {
+                    ItemMeta meta = map.getItemMeta();
+                    meta.getPersistentDataContainer().set(keyIds, PersistentDataType.INTEGER_ARRAY, idsArray);
+                    map.setItemMeta(meta);
                 }
 
                 //Remove empty maps
-                if (playerHas(player, Material.MAP, finalRequiredAmount)) {
-                    removeFromInventory(player, Material.MAP, finalRequiredAmount);
-                } else {
-                    Lang.send(sender, Lang.NOT_ENOUGH_MAPS.replace("{required}", String.valueOf(finalRequiredAmount)));
-                    return;
+                if (!playerWithCheats(player)) {
+                    if (playerHas(player, Material.MAP, finalRequiredAmount)) {
+                        removeFromInventory(player, Material.MAP, finalRequiredAmount);
+                    } else {
+                        Lang.send(sender, Lang.NOT_ENOUGH_MAPS.replace("{required}", String.valueOf(finalRequiredAmount)));
+                        return;
+                    }
                 }
 
                 // Give filled maps
@@ -305,6 +337,87 @@ public class CommandDrmap implements TabExecutor {
                 }
 
                 Lang.send(sender, Lang.IMAGE_CREATED);
+            }, plugin.getMainThreadExecutor());
+            return true;
+        }
+
+        if (args[0].equalsIgnoreCase("update")) {
+            if (!sender.hasPermission("drmap.command.update")) {
+                Lang.send(sender, Lang.COMMAND_NO_PERMISSION);
+                return true;
+            }
+            if (!(sender instanceof Player)) {
+                Lang.send(sender, Lang.NOT_PLAYER);
+                return true;
+            }
+            Player player = (Player) sender;
+            ItemStack hand = player.getInventory().getItemInMainHand();
+            if (!Util.isDrMap(hand)) {
+                Lang.send(sender, Lang.NOT_DRMAP);
+                return true;
+            }
+            ItemMeta itemMeta = hand.getItemMeta();
+            if (!(itemMeta instanceof MapMeta)) {
+                Lang.send(sender, Lang.NOT_DRMAP);
+                return true;
+            }
+            PersistentDataContainer container = itemMeta.getPersistentDataContainer();
+
+            String source = PictureMeta.getSource(container, plugin);
+            int[] idsArray = PictureMeta.getIds(container, ((MapMeta) itemMeta).getMapView().getId(), plugin);
+            Color finalBackground = PictureMeta.getBackground(container, plugin);
+            boolean proportion = PictureMeta.isProportion(container, plugin);
+            int[] parts = PictureMeta.getParts(container, plugin);
+            int finalWidth = parts[2] + 1;
+            int finalHeight = parts[3] + 1;
+
+            if (proportion) {
+                CompletableFuture.supplyAsync(() -> PictureManager.INSTANCE.downloadProportionalImage(source, finalBackground)).whenCompleteAsync((Image image, Throwable exception) -> {
+                    if (image == null) {
+                        plugin.getLogger().warning("Could not download image: " + source);
+                        Lang.send(sender, Lang.ERROR_DOWNLOADING);
+                        return;
+                    }
+
+                    MapView mapView = Bukkit.getMap(idsArray[0]);
+
+                    if (!PictureManager.INSTANCE.saveImage(image, mapView.getId())) {
+                        plugin.getLogger().warning("Could not save image to disk: " + source + " -> " + mapView.getId() + ".png");
+                        Lang.send(sender, Lang.ERROR_DOWNLOADING);
+                        return;
+                    }
+
+                    PictureManager.INSTANCE.getPicture(mapView).updateWithImage(image);
+
+                    Lang.send(sender, Lang.IMAGE_UPDATED);
+                }, plugin.getMainThreadExecutor());
+                return true;
+            }
+
+            // If stretching the map
+            CompletableFuture.supplyAsync(() -> PictureManager.INSTANCE.downloadStretchedImage(source, finalWidth, finalHeight, finalBackground)).whenCompleteAsync((Image[][] images, Throwable exception) -> {
+                if (images == null) {
+                    plugin.getLogger().severe("Could not download image: " + source);
+                    Lang.send(sender, Lang.ERROR_DOWNLOADING);
+                    return;
+                }
+
+                int c = 0;
+                for (int j = 0; j < images[0].length; j++) {
+                    for (int i = 0; i < images.length; i++) {
+                        MapView mapView = Bukkit.getMap(idsArray[c]);
+                        if (!PictureManager.INSTANCE.saveImage(images[i][j], mapView.getId())) {
+                            plugin.getLogger().warning("Could not save image to disk: " + source + " -> " + mapView.getId() + ".png");
+                            Lang.send(sender, Lang.ERROR_DOWNLOADING);
+                            return;
+                        }
+
+                        PictureManager.INSTANCE.getPicture(mapView).updateWithImage(images[i][j]);
+                        c++;
+                    }
+                }
+
+                Lang.send(sender, Lang.IMAGE_UPDATED);
             }, plugin.getMainThreadExecutor());
             return true;
         }
@@ -329,6 +442,7 @@ public class CommandDrmap implements TabExecutor {
             player.getInventory().setItemInMainHand(blankMap);
             return true;
         }
+
         if (args[0].equalsIgnoreCase("info") || args[0].equalsIgnoreCase("author")) {
             if (!sender.hasPermission("drmap.command.info")) {
                 Lang.send(sender, Lang.COMMAND_NO_PERMISSION);
@@ -396,5 +510,10 @@ public class CommandDrmap implements TabExecutor {
             }
         }
         return false;
+    }
+    
+    public boolean playerWithCheats(Player player) {
+        GameMode gameMode = player.getGameMode();
+        return gameMode.equals(GameMode.CREATIVE) || gameMode.equals(GameMode.SPECTATOR);
     }
 }

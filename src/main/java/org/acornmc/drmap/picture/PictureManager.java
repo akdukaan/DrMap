@@ -14,20 +14,26 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class PictureManager {
     public static PictureManager INSTANCE = new PictureManager();
 
-    private Set<Picture> pictures = new HashSet<>();
+    private Map<MapView, Picture> pictures = new HashMap<>();
 
     public void addPicture(Picture picture) {
-        pictures.add(picture);
+        pictures.put(picture.getMapView(), picture);
+    }
+
+    public Picture getPicture(MapView mapView) {
+        return pictures.get(mapView);
     }
 
     public void sendAllMaps(Player player) {
-        pictures.forEach(picture -> player.sendMap(picture.getMapView()));
+        pictures.values().forEach(picture -> player.sendMap(picture.getMapView()));
     }
 
     public Image[][] downloadStretchedImage(String link, int width, int height, Color finalBackground) {
