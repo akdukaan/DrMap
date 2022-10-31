@@ -8,6 +8,7 @@ import org.acornmc.drmap.picture.Picture;
 import org.acornmc.drmap.picture.PictureManager;
 import org.acornmc.drmap.picture.PictureMeta;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
@@ -115,7 +116,7 @@ public class CommandDrmap implements TabExecutor {
 
             // Check if they have a map
             Player player = (Player) sender;
-            if (!player.getInventory().contains(Material.MAP)) {
+            if (!playerWithCheats(player) && !player.getInventory().contains(Material.MAP)) {
                 Lang.send(sender, Lang.MUST_HAVE_MAP);
                 return true;
             }
@@ -171,7 +172,7 @@ public class CommandDrmap implements TabExecutor {
             // Check that they have enough
             // We will check again after the image is downloaded,
             // but I don't want to download images if they don't even have enough maps
-            if (!(playerHas(player, Material.MAP, requiredAmount))) {
+            if (!playerWithCheats(player) && !(playerHas(player, Material.MAP, requiredAmount))) {
                 Lang.send(sender, Lang.NOT_ENOUGH_MAPS.replace("{required}", String.valueOf(requiredAmount)));
                 return true;
             }
@@ -223,12 +224,14 @@ public class CommandDrmap implements TabExecutor {
                     // Apply the meta changes
                     map.setItemMeta(meta);
 
-                    //Remove maps
-                    if (playerHas(player, Material.MAP, finalRequiredAmount)) {
-                        removeFromInventory(player, Material.MAP, finalRequiredAmount);
-                    } else {
-                        Lang.send(sender, Lang.NOT_ENOUGH_MAPS.replace("{required}", String.valueOf(finalRequiredAmount)));
-                        return;
+                    //Remove maps if not in creative
+                    if (!playerWithCheats(player)) {
+                        if (playerHas(player, Material.MAP, finalRequiredAmount)) {
+                            removeFromInventory(player, Material.MAP, finalRequiredAmount);
+                        } else {
+                            Lang.send(sender, Lang.NOT_ENOUGH_MAPS.replace("{required}", String.valueOf(finalRequiredAmount)));
+                            return;
+                        }
                     }
 
                     // Give map
@@ -288,11 +291,13 @@ public class CommandDrmap implements TabExecutor {
                 }
 
                 //Remove empty maps
-                if (playerHas(player, Material.MAP, finalRequiredAmount)) {
-                    removeFromInventory(player, Material.MAP, finalRequiredAmount);
-                } else {
-                    Lang.send(sender, Lang.NOT_ENOUGH_MAPS.replace("{required}", String.valueOf(finalRequiredAmount)));
-                    return;
+                if (!playerWithCheats(player)) {
+                    if (playerHas(player, Material.MAP, finalRequiredAmount)) {
+                        removeFromInventory(player, Material.MAP, finalRequiredAmount);
+                    } else {
+                        Lang.send(sender, Lang.NOT_ENOUGH_MAPS.replace("{required}", String.valueOf(finalRequiredAmount)));
+                        return;
+                    }
                 }
 
                 // Give filled maps
@@ -396,5 +401,10 @@ public class CommandDrmap implements TabExecutor {
             }
         }
         return false;
+    }
+    
+    public boolean playerWithCheats(Player player) {
+        GameMode gameMode = player.getGameMode();
+        return gameMode.equals(GameMode.CREATIVE) || gameMode.equals(GameMode.SPECTATOR);
     }
 }
