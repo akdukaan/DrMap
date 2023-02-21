@@ -8,6 +8,7 @@ import org.acornmc.drmap.picture.Picture;
 import org.acornmc.drmap.picture.PictureManager;
 import org.acornmc.drmap.picture.PictureMeta;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
@@ -165,6 +166,9 @@ public class CommandDrmap implements TabExecutor {
             int requiredAmount = width * height;
             if (requiredAmount <= 0) {
                 requiredAmount = 1;
+            }
+            if (player.getGameMode().equals(GameMode.CREATIVE)) {
+                requiredAmount = 0;
             }
             final int finalRequiredAmount = requiredAmount;
 
