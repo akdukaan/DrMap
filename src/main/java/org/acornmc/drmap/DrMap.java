@@ -32,9 +32,7 @@ public final class DrMap extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new BukkitListener(this), this);
         getCommand("drmap").setExecutor(new CommandDrmap(this));
 
-        if (Config.ENABLE_BSTATS) {
-            new Metrics(this, 9840);
-        }
+        new Metrics(this, 9840);
     }
 
     public Executor getMainThreadExecutor() {
