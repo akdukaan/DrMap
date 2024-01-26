@@ -13,13 +13,13 @@ import java.util.logging.Level;
 public class Config {
     public static String LANGUAGE_FILE = "lang-en.yml";
     public static String TIME_FORMAT = "yyyy-MM-dd HH:mm:ss z";
-    public static String WEBHOOK_URL = "";
+    public static String DISCORD_LOGGING_WEBHOOK = "";
     private static YamlConfiguration config;
 
     private static void init() {
         LANGUAGE_FILE = getString("language-file", LANGUAGE_FILE);
         TIME_FORMAT = getString("time-format", TIME_FORMAT);
-        WEBHOOK_URL = getString("webhook-url", WEBHOOK_URL);
+        DISCORD_LOGGING_WEBHOOK = getString("discord-logging-webhook", DISCORD_LOGGING_WEBHOOK);
     }
 
     // ############################  DO NOT EDIT BELOW THIS LINE  ############################

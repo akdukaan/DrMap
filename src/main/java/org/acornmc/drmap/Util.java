@@ -32,7 +32,7 @@ public class Util {
 
     public static void sendDiscordEmbed(String message, String link) {
         try {
-            URL url = new URL(Config.WEBHOOK_URL);
+            URL url = new URL(Config.DISCORD_LOGGING_WEBHOOK);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/json");
