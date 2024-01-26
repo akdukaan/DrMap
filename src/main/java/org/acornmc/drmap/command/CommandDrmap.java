@@ -244,7 +244,7 @@ public class CommandDrmap implements TabExecutor {
                     });
 
                     Lang.send(sender, Lang.IMAGE_CREATED);
-                    sendDiscordEmbed(player.getName() + " Has create a new DrMap image", args[1]);
+                    sendDiscordEmbed(player.getName() + " has created a new DrMap image", args[1]);
                 }, plugin.getMainThreadExecutor());
                 return true;
             }
@@ -310,7 +310,7 @@ public class CommandDrmap implements TabExecutor {
                 }
 
                 Lang.send(sender, Lang.IMAGE_CREATED);
-                sendDiscordEmbed(player.getName() + " Has create a new DrMap image", args[1]);
+                sendDiscordEmbed(player.getName() + " has created a new DrMap image", args[1]);
             }, plugin.getMainThreadExecutor());
             return true;
         }
