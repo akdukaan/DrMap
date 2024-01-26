@@ -29,6 +29,8 @@ import java.util.*;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import static org.acornmc.drmap.Util.sendDiscordEmbed;
+
 public class CommandDrmap implements TabExecutor {
     private final DrMap plugin;
 
@@ -194,7 +196,6 @@ public class CommandDrmap implements TabExecutor {
                         Lang.send(sender, Lang.ERROR_DOWNLOADING);
                         return;
                     }
-
                     MapView mapView = Bukkit.createMap(Bukkit.getWorlds().get(0));
 
                     if (!PictureManager.INSTANCE.saveImage(image, mapView.getId())) {
@@ -243,10 +244,10 @@ public class CommandDrmap implements TabExecutor {
                     });
 
                     Lang.send(sender, Lang.IMAGE_CREATED);
+                    sendDiscordEmbed(player.getName() + " has created a new DrMap image", args[1]);
                 }, plugin.getMainThreadExecutor());
                 return true;
             }
-
             // If stretching the map
             CompletableFuture.supplyAsync(() -> PictureManager.INSTANCE.downloadStretchedImage(args[1], finalWidth, finalHeight, finalBackground)).whenCompleteAsync((Image[][] images, Throwable exception) -> {
                 if (images == null) {
@@ -309,6 +310,7 @@ public class CommandDrmap implements TabExecutor {
                 }
 
                 Lang.send(sender, Lang.IMAGE_CREATED);
+                sendDiscordEmbed(player.getName() + " has created a new DrMap image", args[1]);
             }, plugin.getMainThreadExecutor());
             return true;
         }
