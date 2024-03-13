@@ -8,6 +8,7 @@ import com.sk89q.worldguard.internal.platform.WorldGuardPlatform;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
+import org.acornmc.drmap.configuration.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -19,6 +20,12 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
+import sun.net.www.http.HttpClient;
+
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 public class Util {
 
@@ -31,10 +38,49 @@ public class Util {
         ItemMeta itemMeta = item.getItemMeta();
         if (itemMeta == null) return false;
         PersistentDataContainer container = itemMeta.getPersistentDataContainer();
-        if (!container.has(key, PersistentDataType.STRING)) return false;
-        return true;
+        return container.has(key, PersistentDataType.STRING);
+
     }
 
+    public static void sendDiscordEmbed(String message, String link) {
+        try {
+            URL url = new URL(Config.DISCORD_LOGGING_WEBHOOK);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setDoOutput(true);
+
+            String jsonPayload = "{\n" +
+                    "  \"content\": \"\",\n" +
+                    "  \"embeds\": [\n" +
+                    "    {\n" +
+                    "      \"title\": \"DrMap\",\n" +
+                    "      \"description\": \"" + message + "\",\n" +
+                    "      \"color\": 16711680,\n" +
+                    "      \"image\": {\n" +
+                    "        \"url\": \"" + link + "\"\n" +
+                    "      }\n" +
+                    "    }\n" +
+                    "  ]\n" +
+                    "}";
+
+            try (OutputStream os = connection.getOutputStream()) {
+                byte[] input = jsonPayload.getBytes(StandardCharsets.UTF_8);
+                os.write(input, 0, input.length);
+            }
+
+            int responseCode = connection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_NO_CONTENT) {
+                DrMap.getInstance().getLogger().info("Sent Discord embed.");
+            } else {
+                DrMap.getInstance().getLogger().warning("Failed to send Discord embed. Response code: " + responseCode);
+            }
+
+            connection.disconnect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     // Check with protection plugins to see if the player can edit the block
     public static String getBlockProtection(Player player, Location location, Material material) {
         PluginManager pluginManager = Bukkit.getServer().getPluginManager();
