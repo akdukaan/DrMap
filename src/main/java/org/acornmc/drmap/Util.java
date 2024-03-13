@@ -81,7 +81,14 @@ public class Util {
             e.printStackTrace();
         }
     }
-    // Check with protection plugins to see if the player can edit the block
+
+    /**
+     * Check with protection plugins to see if the player can edit the block
+     * @param player
+     * @param location
+     * @param material
+     * @return null if the player is allowed to edit the block or an error message if they can't
+     */
     public static String getBlockProtection(Player player, Location location, Material material) {
         PluginManager pluginManager = Bukkit.getServer().getPluginManager();
 

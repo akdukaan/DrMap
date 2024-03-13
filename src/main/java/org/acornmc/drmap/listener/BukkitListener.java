@@ -106,9 +106,9 @@ public class BukkitListener implements Listener {
         }
         if (!allFound(partsFound)) return false;
 
-        // Check that the wall has all the empty itemframes
+        // Calculate the range of positions that we need to search item frames in
         int leftSearch = part[0]; // The distance to the 'left' we need to check item frames
-        int upSearch = part[1]; // The distance 'up' we need to check item frames
+        int upSearch = part[1]; // The distance up we need to check item frames
         int rightSearch = part[2]-part[0]; // The distance to the 'right' we need to check item frames
         int downSearch = part[3]-part[1]; // The distance down we need to check item frames
         Location origin = frame.getLocation();
@@ -149,6 +149,7 @@ public class BukkitListener implements Listener {
             // and I don't think the other ones are possible.
             return false;
         }
+        // Check through the range to make sure all the item frames we need are there and are facing the same way
         for (int x = lowestX; x <= highestX; x++) {
             for (int y = lowestY; y <= highestY; y++) {
                 for (int z = lowestZ; z <= highestZ; z++) {
@@ -164,11 +165,16 @@ public class BukkitListener implements Listener {
         if (face == BlockFace.NORTH) {
             for (int x = lowestX; x <= highestX; x++) {
                 for (int y = lowestY; y <= highestY; y++) {
+                    // Get the item frame we want to place into
                     Location location = new Location(world, x, y, originZ);
                     ItemFrame itemFrame = getEmptyItemFrame(location, world, face);
+                    // Lookup where in the inventory we found the map earlier
                     int inventoryIndex = partsFound[highestX-x][highestY-y];
+                    // Find the corresponding map from the player's inventory
                     ItemStack map = playerInventory.getItem(inventoryIndex);
+                    // Set the map to the item frame
                     itemFrame.setItem(map);
+                    // Remove the map from the player's inventory
                     removeOne(playerInventory,inventoryIndex);
                 }
             }
