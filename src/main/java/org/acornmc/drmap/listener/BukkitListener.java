@@ -160,7 +160,7 @@ public class BukkitListener implements Listener {
         }
 
         // At this point we've checked everything we need to know that we should magic place.
-        // So we will go through each location and place the item frame we need
+        // So we will go through each location and place the map we need in the item frame
         if (face == BlockFace.NORTH) {
             for (int x = lowestX; x <= highestX; x++) {
                 for (int y = lowestY; y <= highestY; y++) {
