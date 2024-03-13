@@ -29,7 +29,7 @@ public class PictureMeta {
     }
 
     public static void sendCreation(CommandSender sender, PersistentDataContainer container, DrMap plugin) {
-        String creation = PictureMeta.getCreationString(container, plugin);
+        String creation = PictureMeta.getCreationString(container);
         if (creation != null) {
             String message = Lang.INFO_CREATION.replace("{creation}", creation);
             Lang.send(sender, message);
@@ -37,7 +37,7 @@ public class PictureMeta {
     }
 
     public static void sendPart(CommandSender sender, PersistentDataContainer container, DrMap plugin) {
-        int[] part = PictureMeta.getParts(container, plugin);
+        int[] part = PictureMeta.getParts(container);
         if (part != null) {
             String message = Lang.INFO_PART
                     .replace("{this-x}", String.valueOf(part[0]))
@@ -49,7 +49,7 @@ public class PictureMeta {
     }
 
     public static void sendSource(CommandSender sender, PersistentDataContainer container, DrMap plugin) {
-        String source = PictureMeta.getSource(container, plugin);
+        String source = PictureMeta.getSource(container);
         if (source != null) {
             String message = Lang.INFO_SOURCE.replace("{source}", source);
             Lang.send(sender, message);
@@ -57,7 +57,7 @@ public class PictureMeta {
     }
 
     public static String getAuthorUsername(PersistentDataContainer container, DrMap plugin) {
-        String author = getAuthorUUIDString(container, plugin);
+        String author = getAuthorUUIDString(container);
         if (author == null) {
             return null;
         }
@@ -65,14 +65,14 @@ public class PictureMeta {
         return Bukkit.getOfflinePlayer(authorUUID).getName();
     }
 
-    public static String getAuthorUUIDString(PersistentDataContainer container, DrMap plugin) {
-        NamespacedKey keyAuthor = new NamespacedKey(plugin, "drmap-author");
+    public static String getAuthorUUIDString(PersistentDataContainer container) {
+        NamespacedKey keyAuthor = new NamespacedKey(DrMap.getInstance(), "drmap-author");
         return container.get(keyAuthor, PersistentDataType.STRING);
     }
 
-    public static String getCreationString(PersistentDataContainer container, DrMap plugin) {
+    public static String getCreationString(PersistentDataContainer container) {
         try {
-            Long creation = getCreationLong(container, plugin);
+            Long creation = getCreationLong(container);
             if (creation == null) {
                 return null;
             }
@@ -83,50 +83,18 @@ public class PictureMeta {
         return null;
     }
 
-    public static Long getCreationLong(PersistentDataContainer container, DrMap plugin) {
-        NamespacedKey keyCreation = new NamespacedKey(plugin, "drmap-creation");
+    public static Long getCreationLong(PersistentDataContainer container) {
+        NamespacedKey keyCreation = new NamespacedKey(DrMap.getInstance(), "drmap-creation");
         return container.get(keyCreation, PersistentDataType.LONG);
     }
 
-    public static int[] getParts(PersistentDataContainer container, DrMap plugin) {
-        NamespacedKey keyPart = new NamespacedKey(plugin, "drmap-part");
+    public static int[] getParts(PersistentDataContainer container) {
+        NamespacedKey keyPart = new NamespacedKey(DrMap.getInstance(), "drmap-part");
         return container.get(keyPart, PersistentDataType.INTEGER_ARRAY);
     }
 
-    public static String getSource(PersistentDataContainer container, DrMap plugin) {
-        NamespacedKey keySource = new NamespacedKey(plugin, "drmap-source");
+    public static String getSource(PersistentDataContainer container) {
+        NamespacedKey keySource = new NamespacedKey(DrMap.getInstance(), "drmap-source");
         return container.get(keySource, PersistentDataType.STRING);
-    }
-
-    public static boolean playerHasAllParts(PersistentDataContainer container, Player player, DrMap plugin) {
-        int[] parts = PictureMeta.getParts(container, plugin);
-        if (parts == null) {
-            return false;
-        }
-        long creation = getCreationLong(container, plugin);
-        String authorUUIDString = getAuthorUUIDString(container, plugin);
-        for (int i = 0; i < parts[2]; i++) {
-            for (int j = 0; j < parts[3]; j++) {
-                if (!playerHasPart(player, new int[]{i, j, parts[2], parts[3]}, authorUUIDString, creation, plugin)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    public static boolean playerHasPart(Player player, int[] parts, String author, long timestamp, DrMap plugin) {
-        for (ItemStack itemStack : player.getInventory().getContents()) {
-            if (itemStack != null && itemStack.getType() == Material.FILLED_MAP) {
-                ItemMeta itemMeta = itemStack.getItemMeta();
-                if (itemMeta != null) {
-                    PersistentDataContainer container = itemMeta.getPersistentDataContainer();
-                    if (author.equals(getAuthorUUIDString(container, plugin)) && timestamp == getCreationLong(container, plugin) && Arrays.equals(parts, getParts(container, plugin))) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
     }
 }

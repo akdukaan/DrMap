@@ -27,6 +27,9 @@ permissions:
   drmap.place:
     default: op
     description: place drmaps in item frames
+  drmap.place.magic:
+    default: op
+    description: quick-place large drmaps in item frames
   drmap.rotate:
     default: op
     description: rotate drmaps
