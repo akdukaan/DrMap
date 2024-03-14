@@ -80,7 +80,6 @@ public class BukkitListener implements Listener {
      * @return true if we were able to magic-place everything
      */
     public boolean tryMagicPlace(Player player, ItemFrame frame, ItemStack itemUsed) {
-        System.out.println("Trying magic place");
         ItemMeta itemMeta = itemUsed.getItemMeta();
         if (itemMeta == null) return false;
         PersistentDataContainer container = itemMeta.getPersistentDataContainer();
@@ -105,7 +104,6 @@ public class BukkitListener implements Listener {
             partsFound = markIfFound(item, partsFound, inventoryIndex, source, creation, author);
         }
         if (!allFound(partsFound)) return false;
-        System.out.println("All parts have been found in the player's inventory");
 
         // Calculate the range of positions that we need to search item frames in
         int leftSearch = part[0]; // The distance to the 'left' we need to check item frames
@@ -160,7 +158,6 @@ public class BukkitListener implements Listener {
                 }
             }
         }
-        System.out.println("All item frames exist! Will now magic place!");
 
         // At this point we've checked everything we need to know that we should magic place.
         // So we will go through each location and place the map we need in the item frame
