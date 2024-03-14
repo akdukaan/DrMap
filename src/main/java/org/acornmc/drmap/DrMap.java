@@ -32,6 +32,10 @@ public final class DrMap extends JavaPlugin {
         getCommand("drmap").setExecutor(new CommandDrmap(this));
 
         new Metrics(this, 9840);
+
+        try {
+            UpdateChecker.checkForUpdates(this);
+        } catch (Error ignored) {}
     }
 
     public Executor getMainThreadExecutor() {
