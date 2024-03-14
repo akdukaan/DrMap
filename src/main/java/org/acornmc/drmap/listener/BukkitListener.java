@@ -3,7 +3,6 @@ package org.acornmc.drmap.listener;
 import org.acornmc.drmap.DrMap;
 import org.acornmc.drmap.Util;
 import org.acornmc.drmap.configuration.Lang;
-import org.acornmc.drmap.picture.Picture;
 import org.acornmc.drmap.picture.PictureManager;
 import org.acornmc.drmap.picture.PictureMeta;
 import org.bukkit.*;
@@ -81,6 +80,7 @@ public class BukkitListener implements Listener {
      * @return true if we were able to magic-place everything
      */
     public boolean tryMagicPlace(Player player, ItemFrame frame, ItemStack itemUsed) {
+        System.out.println("Trying magic place");
         ItemMeta itemMeta = itemUsed.getItemMeta();
         if (itemMeta == null) return false;
         PersistentDataContainer container = itemMeta.getPersistentDataContainer();
@@ -105,6 +105,7 @@ public class BukkitListener implements Listener {
             partsFound = markIfFound(item, partsFound, inventoryIndex, source, creation, author);
         }
         if (!allFound(partsFound)) return false;
+        System.out.println("All parts have been found in the player's inventory");
 
         // Calculate the range of positions that we need to search item frames in
         int leftSearch = part[0]; // The distance to the 'left' we need to check item frames
@@ -159,6 +160,7 @@ public class BukkitListener implements Listener {
                 }
             }
         }
+        System.out.println("All item frames exist! Will now magic place!");
 
         // At this point we've checked everything we need to know that we should magic place.
         // So we will go through each location and place the map we need in the item frame
@@ -169,7 +171,7 @@ public class BukkitListener implements Listener {
                     Location location = new Location(world, x, y, originZ);
                     ItemFrame itemFrame = getEmptyItemFrame(location, world, face);
                     // Lookup where in the inventory we found the map earlier
-                    int inventoryIndex = partsFound[highestX-x][highestY-y];
+                    int inventoryIndex = partsFound[highestX-x][y-lowestY];
                     // Find the corresponding map from the player's inventory
                     ItemStack map = playerInventory.getItem(inventoryIndex);
                     // Set the map to the item frame
@@ -205,7 +207,7 @@ public class BukkitListener implements Listener {
                 for (int y = lowestY; y <= highestY; y++) {
                     Location location = new Location(world, originX, y, z);
                     ItemFrame itemFrame = getEmptyItemFrame(location, world, face);
-                    int inventoryIndex = partsFound[highestZ-z][highestY-y];
+                    int inventoryIndex = partsFound[highestZ-z][y-lowestY];
                     ItemStack map = playerInventory.getItem(inventoryIndex);
                     itemFrame.setItem(map);
                     removeOne(playerInventory, inventoryIndex);
@@ -232,7 +234,14 @@ public class BukkitListener implements Listener {
         Predicate<Entity> isItemFrame = entity -> entity.getFacing() == face && (entity.getType() == EntityType.ITEM_FRAME || entity.getType() == EntityType.GLOW_ITEM_FRAME);
         for (Entity frame : world.getNearbyEntities(location,1,1,1,isItemFrame)) {
             ItemFrame itemFrame = (ItemFrame) frame;
-            if (itemFrame.getItem().getType() == Material.AIR) return itemFrame;
+            if (itemFrame.getItem().getType() == Material.AIR) {
+                Location frameLocation = itemFrame.getLocation();
+                if (frameLocation.getBlockX() == location.getBlockX() &&
+                        frameLocation.getBlockY() == location.getBlockY() &&
+                        frameLocation.getBlockZ() == location.getBlockZ()) {
+                    return itemFrame;
+                }
+            }
         }
         return null;
     }
