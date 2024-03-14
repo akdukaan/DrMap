@@ -174,7 +174,7 @@ public class BukkitListener implements Listener {
                     // Set the map to the item frame
                     itemFrame.setItem(map);
                     // Remove the map from the player's inventory
-                    removeOne(playerInventory,inventoryIndex);
+                    removeOne(player,inventoryIndex);
                 }
             }
         } else if (face == BlockFace.SOUTH) {
@@ -185,7 +185,7 @@ public class BukkitListener implements Listener {
                     int inventoryIndex = partsFound[x-lowestX][y-lowestY];
                     ItemStack map = playerInventory.getItem(inventoryIndex);
                     itemFrame.setItem(map);
-                    removeOne(playerInventory,inventoryIndex);
+                    removeOne(player,inventoryIndex);
                 }
             }
         } else if (face == BlockFace.WEST) {
@@ -196,7 +196,7 @@ public class BukkitListener implements Listener {
                     int inventoryIndex = partsFound[z-lowestZ][y-lowestY];
                     ItemStack map = playerInventory.getItem(inventoryIndex);
                     itemFrame.setItem(map);
-                    removeOne(playerInventory,inventoryIndex);
+                    removeOne(player,inventoryIndex);
                 }
             }
         } else { // BlockFace.EAST
@@ -207,14 +207,16 @@ public class BukkitListener implements Listener {
                     int inventoryIndex = partsFound[highestZ-z][y-lowestY];
                     ItemStack map = playerInventory.getItem(inventoryIndex);
                     itemFrame.setItem(map);
-                    removeOne(playerInventory, inventoryIndex);
+                    removeOne(player, inventoryIndex);
                 }
             }
         }
         return true;
     }
 
-    public void removeOne(PlayerInventory inv, int index) {
+    public void removeOne(Player player, int index) {
+        if (player.getGameMode() == GameMode.CREATIVE) return;
+        PlayerInventory inv = player.getInventory();
         ItemStack itemStack = inv.getItem(index);
         if (itemStack == null) return;
         itemStack.setAmount(itemStack.getAmount()-1);
