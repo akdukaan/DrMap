@@ -43,6 +43,7 @@ public class Util {
     }
 
     public static void sendDiscordEmbed(String message, String link) {
+        if (Config.DISCORD_LOGGING_WEBHOOK.equals("")) return;
         try {
             URL url = new URL(Config.DISCORD_LOGGING_WEBHOOK);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
