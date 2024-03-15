@@ -24,6 +24,11 @@ permissions:
     description: erase drmaps
     children:
       drmap.command: true
+  drmap.command.info:
+    default: op
+    description: get info on drmaps
+    children:
+      drmap.command: true
   drmap.place:
     default: op
     description: place drmaps in item frames
@@ -33,11 +38,6 @@ permissions:
   drmap.rotate:
     default: op
     description: rotate drmaps
-  drmap.command.info:
-    default: op
-    description: get info on drmaps
-    children:
-      drmap.command: true
   drmap.cartography:
     default: op
     description: manipulate drmaps in cartography table
