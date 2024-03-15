@@ -168,7 +168,7 @@ public class BukkitListener implements Listener {
                     Location location = new Location(world, x, y, originZ);
                     ItemFrame itemFrame = getEmptyItemFrame(location, world, face);
                     // Lookup where in the inventory we found the map earlier
-                    int inventoryIndex = partsFound[highestX-x][y-lowestY];
+                    int inventoryIndex = partsFound[highestX-x][highestY-y];
                     // Find the corresponding map from the player's inventory
                     ItemStack map = playerInventory.getItem(inventoryIndex);
                     // Set the map to the item frame
@@ -182,7 +182,7 @@ public class BukkitListener implements Listener {
                 for (int y = lowestY; y <= highestY; y++) {
                     Location location = new Location(world, x, y, originZ);
                     ItemFrame itemFrame = getEmptyItemFrame(location, world, face);
-                    int inventoryIndex = partsFound[x-lowestX][y-lowestY];
+                    int inventoryIndex = partsFound[x-lowestX][highestY-y];
                     ItemStack map = playerInventory.getItem(inventoryIndex);
                     itemFrame.setItem(map);
                     removeOne(player,inventoryIndex);
@@ -193,7 +193,7 @@ public class BukkitListener implements Listener {
                 for (int y = lowestY; y <= highestY; y++) {
                     Location location = new Location(world, originX, y, z);
                     ItemFrame itemFrame = getEmptyItemFrame(location, world, face);
-                    int inventoryIndex = partsFound[z-lowestZ][y-lowestY];
+                    int inventoryIndex = partsFound[z-lowestZ][highestY-y];
                     ItemStack map = playerInventory.getItem(inventoryIndex);
                     itemFrame.setItem(map);
                     removeOne(player,inventoryIndex);
@@ -204,7 +204,7 @@ public class BukkitListener implements Listener {
                 for (int y = lowestY; y <= highestY; y++) {
                     Location location = new Location(world, originX, y, z);
                     ItemFrame itemFrame = getEmptyItemFrame(location, world, face);
-                    int inventoryIndex = partsFound[highestZ-z][y-lowestY];
+                    int inventoryIndex = partsFound[highestZ-z][highestY-y];
                     ItemStack map = playerInventory.getItem(inventoryIndex);
                     itemFrame.setItem(map);
                     removeOne(player, inventoryIndex);
