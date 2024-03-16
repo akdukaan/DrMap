@@ -128,24 +128,19 @@ public class CommandDrmap implements TabExecutor {
             Color background = null;
 
             if (args.length > 2) {
-                if (args[2].equalsIgnoreCase("-s")) {
-                    width = 1;
-                    height = 1;
-                } else {
-                    for (int i = 2; i < args.length; i++) {
-                        if (args[i].toLowerCase().startsWith("width:")) {
-                            try {
-                                width = Integer.parseInt(args[i].toLowerCase().replaceFirst("width:", ""));
-                            } catch (Exception ignored) {}
-                        } else if (args[i].toLowerCase().startsWith("height:")) {
-                            try {
-                                height = Integer.parseInt(args[i].toLowerCase().replaceFirst("height:", ""));
-                            } catch (Exception ignored) {}
-                        } else if (args[i].toLowerCase().startsWith("background:")) {
-                            try {
-                                background = Color.decode(args[i].toLowerCase().replaceFirst("background:", ""));
-                            } catch (Exception ignored) {}
-                        }
+                for (int i = 2; i < args.length; i++) {
+                    if (args[i].toLowerCase().startsWith("width:")) {
+                        try {
+                            width = Integer.parseInt(args[i].toLowerCase().replaceFirst("width:", ""));
+                        } catch (Exception ignored) {}
+                    } else if (args[i].toLowerCase().startsWith("height:")) {
+                        try {
+                            height = Integer.parseInt(args[i].toLowerCase().replaceFirst("height:", ""));
+                        } catch (Exception ignored) {}
+                    } else if (args[i].toLowerCase().startsWith("background:")) {
+                        try {
+                            background = Color.decode(args[i].toLowerCase().replaceFirst("background:", ""));
+                        } catch (Exception ignored) {}
                     }
                 }
             }
