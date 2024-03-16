@@ -126,6 +126,7 @@ public class CommandDrmap implements TabExecutor {
             int width = 0;
             int height = 0;
             Color background = null;
+            String fit = "";
 
             if (args.length > 2) {
                 for (int i = 2; i < args.length; i++) {
@@ -141,10 +142,14 @@ public class CommandDrmap implements TabExecutor {
                         try {
                             background = Color.decode(args[i].toLowerCase().replaceFirst("background:", ""));
                         } catch (Exception ignored) {}
+                    } else if (args[i].toLowerCase().startsWith("fit:")) {
+                        try {
+                            fit = args[i].toLowerCase().replaceFirst("fit:", "");
+                        } catch (Exception ignored) {}
                     }
                 }
             }
-            // If they put invalid height/width, assume 0
+            // If they put negative height/width, assume 0
             if (width < 0) {
                 width = 0;
             }
@@ -152,11 +157,12 @@ public class CommandDrmap implements TabExecutor {
                 height = 0;
             }
 
+            // If they put a height but not a width, assume the other is the same
             if (width > 0 && height == 0) {
-                height = 1;
+                height = width;
             }
             if (height > 0 && width == 0) {
-                width = 1;
+                width = height;
             }
 
             // Calculate required amount
