@@ -22,7 +22,7 @@ public class UpdateChecker {
         if (json == null) return;
         String latestVersion = json.getAsJsonArray().get(0).getAsJsonObject().get("version_number").getAsString();
 
-        // Compare more complicated versions
+        // Compare versions
         if (compareVersions(usingVersion,latestVersion) < 0) {
             getLogger().warning("You are using DrMap version " + usingVersion + " which is outdated. Please update to version " + latestVersion + " at https://modrinth.com/plugin/drmap.");
         }
