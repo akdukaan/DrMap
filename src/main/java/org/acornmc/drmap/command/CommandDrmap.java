@@ -197,7 +197,7 @@ public class CommandDrmap implements TabExecutor {
             }
 
             Lang.send(player, Lang.IMAGE_CREATED);
-            sendDiscordEmbed(player.getName() + " has created a new DrMap image", url);
+            sendDiscordEmbed(player.getName(), url);
         }, plugin.getMainThreadExecutor());
     }
 
