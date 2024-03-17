@@ -401,9 +401,6 @@ public class BukkitListener implements Listener {
         }
         CartographyInventory cartographyInventory = (CartographyInventory) event.getClickedInventory();
         ItemStack itemStack = cartographyInventory.getItem(0);
-        if (itemStack == null) {
-            return;
-        }
         if (!Util.isDrMap(itemStack)) {
             return;
         }
