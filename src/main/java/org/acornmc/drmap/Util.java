@@ -9,6 +9,7 @@ import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import org.acornmc.drmap.configuration.Config;
+import org.acornmc.drmap.configuration.Lang;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -42,7 +43,7 @@ public class Util {
 
     }
 
-    public static void sendDiscordEmbed(String message, String link) {
+    public static void sendDiscordEmbed(String playerName, String link) {
         if (Config.DISCORD_LOGGING_WEBHOOK.equals("")) return;
         try {
             URL url = new URL(Config.DISCORD_LOGGING_WEBHOOK);
@@ -50,6 +51,7 @@ public class Util {
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setDoOutput(true);
+            String message = Lang.IMAGE_CREATED_BY_PLAYER.replace("{player}", playerName);
 
             String jsonPayload = "{\n" +
                     "  \"content\": \"\",\n" +

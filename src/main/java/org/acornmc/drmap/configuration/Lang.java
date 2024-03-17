@@ -28,6 +28,7 @@ public class Lang {
     public static String NOT_PLAYER = "&4This command can only be executed by players.";
     public static String NOT_DRMAP = "&4You must hold a DrMap to use that command.";
     public static String CARTOGRAPHY_NO_PERMISSION = "&4You do not have permission to manipulate DrMaps in a cartography table.";
+    public static String IMAGE_CREATED_BY_PLAYER ="{player} has created a new DrMap image.";
     private static void init() {
         COMMAND_NO_PERMISSION = getString("command-no-permission", COMMAND_NO_PERMISSION);
         ACTION_NO_PERMISSION = getString("action-no-permission", ACTION_NO_PERMISSION);
