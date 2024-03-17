@@ -257,7 +257,7 @@ public class BukkitListener implements Listener {
                     removeOne(player, inventoryIndex);
                 }
             }
-        } else { // Blockface UP
+        } else if (face == BlockFace.UP) {
             Rotation rotation;
             for (int x = lowestX; x <= highestX; x++) {
                 for (int z = lowestZ; z <= highestZ; z++) {
@@ -311,6 +311,8 @@ public class BukkitListener implements Listener {
                     itemFrame.setRotation(rotation);
                 }
             }
+        } else {
+            return false;
         }
         return true;
     }
