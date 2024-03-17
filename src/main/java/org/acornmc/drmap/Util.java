@@ -269,15 +269,15 @@ public class Util {
     public static Image[][] divideImageFitCover(BufferedImage image, int width, int height, Color finalBackground) {
         Image[][] images = new Image[width][height];
 
-        int imageWidth = image.getWidth(); //500 //Cat750
-        int imageHeight = image.getHeight(); //750 //Cat500
-        int frameWidth = 128 * width; // 128 //Cat 256
-        int frameHeight = 128 * height;// 256 //Cat256
-        double imageAspectRatio = (double) imageWidth / imageHeight; //0.7 //Cat 1.5
-        double frameAspectRatio = (double) frameWidth / frameHeight; //0.5 // Cat 1
+        int imageWidth = image.getWidth();
+        int imageHeight = image.getHeight();
+        int frameWidth = 128 * width;
+        int frameHeight = 128 * height;
+        double imageAspectRatio = (double) imageWidth / imageHeight;
+        double frameAspectRatio = (double) frameWidth / frameHeight;
 
-        int scaledHeight; //goal 250 //cat250
-        int scaledWidth; //goal 180 //cat300
+        int scaledHeight;
+        int scaledWidth;
         if (imageAspectRatio >= frameAspectRatio) { // I want it to cut off the sides
             scaledHeight = frameHeight;
             if (imageAspectRatio > 1) {

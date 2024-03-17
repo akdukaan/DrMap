@@ -223,7 +223,6 @@ public class CommandDrmap implements TabExecutor {
         if (player.getGameMode().equals(GameMode.CREATIVE)) {
             requiredAmount = 0;
         }
-        final int finalRequiredAmount = requiredAmount;
 
         // Check that they have enough
         // We will check again after the image is downloaded,
