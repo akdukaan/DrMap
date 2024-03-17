@@ -114,14 +114,17 @@ public class BukkitListener implements Listener {
         World world = origin.getWorld();
         if (world == null) return false;
         int originX = origin.getBlockX();
+        int originY = origin.getBlockY();
         int originZ = origin.getBlockZ();
         BlockFace face = frame.getFacing();
         int lowestZ,lowestX,highestZ,highestX;
-        int lowestY = origin.getBlockY()-downSearch;
-        int highestY = origin.getBlockY()+upSearch;
-        // North: Left is increasing x, Right is decreasing x,
+        int lowestY = originY-downSearch;
+        int highestY = originY+upSearch;
+        float yaw = player.getLocation().getYaw();
+
+        // North: Left east is increasing x, Right west is decreasing x,
         // South: Left is decreasing x, Right is increasing x,
-        // West: Left is decreasing z, Right is increasing z,
+        // West: Left north is decreasing z, Right south is increasing z,
         // East Left is increasing z, Right is decreasing z,
         if (face == BlockFace.NORTH) {
             lowestZ = originZ;
@@ -138,14 +141,58 @@ public class BukkitListener implements Listener {
             highestX = originX;
             lowestZ = originZ - leftSearch;
             highestZ = originZ + rightSearch;
-        } else if (face == BlockFace.EAST){
+        } else if (face == BlockFace.EAST) {
             lowestX = originX;
             highestX = originX;
             lowestZ = originZ - rightSearch;
             highestZ = originZ + leftSearch;
+        } else if (face == BlockFace.UP) {
+            lowestY = originY;
+            highestY = originY;
+            if (yaw >= 45 && yaw < 135) {
+                // Player is facing west
+                // Left is south (increasing z)
+                // Right is north (decreasing z)
+                // Up is west (decreasing x)
+                // Down is east (increasing x)
+                lowestX = originX - upSearch;
+                highestX = originX + downSearch;
+                lowestZ = originZ - rightSearch;
+                highestZ = originZ + leftSearch;
+            } else if (yaw >= -135 && yaw < -45){
+                // Player is facing east
+                // Left is north (decreasing z)
+                // Right is south (increasing z)
+                // Up is east (increasing x)
+                // Down is west (decreasing x)
+                lowestX = originX - downSearch;
+                highestX = originX + upSearch;
+                lowestZ = originZ - leftSearch;
+                highestZ = originZ + rightSearch;
+            } else if (yaw >= -45 && yaw < 45) {
+                // Player is facing south
+                // Left is east (increasing x)
+                // Right is west (decreasing x)
+                // Up is south (increasing z)
+                // Down is north (decreasing z)
+                lowestX = originX - rightSearch;
+                highestX = originX + leftSearch;
+                lowestZ = originZ - downSearch;
+                highestZ = originZ + upSearch;
+            } else {
+                // Player is facing north
+                // Left is west (decreasing x)
+                // Right is east (increasing x)
+                // Up is north (decreasing z)
+                // Down is south (increasing z)
+                lowestX = originX - leftSearch;
+                highestX = originX + rightSearch;
+                lowestZ = originZ - upSearch;
+                highestZ = originZ + downSearch;
+            }
+
         } else {
-            // We will not support blockfaces UP or DOWN at the moment
-            // and I don't think the other ones are possible.
+            // We will not support blockface DOWN at the moment
             return false;
         }
         // Check through the range to make sure all the item frames we need are there and are facing the same way
@@ -199,7 +246,7 @@ public class BukkitListener implements Listener {
                     removeOne(player,inventoryIndex);
                 }
             }
-        } else { // BlockFace.EAST
+        } else if (face == BlockFace.EAST){ // BlockFace.EAST
             for (int z = lowestZ; z <= highestZ; z++) {
                 for (int y = lowestY; y <= highestY; y++) {
                     Location location = new Location(world, originX, y, z);
@@ -208,6 +255,60 @@ public class BukkitListener implements Listener {
                     ItemStack map = playerInventory.getItem(inventoryIndex);
                     itemFrame.setItem(map);
                     removeOne(player, inventoryIndex);
+                }
+            }
+        } else { // Blockface UP
+            Rotation rotation;
+            for (int x = lowestX; x <= highestX; x++) {
+                for (int z = lowestZ; z <= highestZ; z++) {
+                    Location location = new Location(world, x, originY, z);
+                    ItemFrame itemFrame = getEmptyItemFrame(location, world, face);
+
+                    int leftRightIndex; // Goal: small number
+                    int upDownIndex;
+                    if (yaw >= 45 && yaw < 135) {
+                        // Player is facing west
+                        // Left is south (increasing z)
+                        // Right is north (decreasing z)
+                        // Up is west (decreasing x)
+                        // Down is east (increasing x)
+                        leftRightIndex = highestZ-z;
+                        upDownIndex = x-lowestX;
+                        rotation = Rotation.COUNTER_CLOCKWISE_45;
+                    } else if (yaw >= -135 && yaw < -45) {
+                        // Player is facing east
+                        // Left is north (decreasing z)
+                        // Right is south (increasing z)
+                        // Up is east (increasing x)
+                        // Down is west (decreasing x)
+                        leftRightIndex = z-lowestZ;
+                        upDownIndex = highestX-x;
+                        rotation = Rotation.FLIPPED_45;
+                    } else if (yaw >= -45 && yaw < 45) {
+                        // Player is facing south
+                        // Left is east (increasing x)
+                        // Right is west (decreasing x)
+                        // Up is south (increasing z)
+                        // Down is north (decreasing z)
+                        leftRightIndex = highestX-x;
+                        upDownIndex = highestZ-z;
+                        rotation = Rotation.COUNTER_CLOCKWISE;
+                    } else {
+                        // Player is facing north
+                        // Left is west (decreasing x)
+                        // Right is east (increasing x)
+                        // Up is north (decreasing z)
+                        // Down is south (increasing z)
+                        leftRightIndex = x-lowestX;
+                        upDownIndex = z-lowestZ;
+                        rotation = Rotation.NONE;
+                    }
+
+                    int inventoryIndex = partsFound[leftRightIndex][upDownIndex];
+                    ItemStack map = playerInventory.getItem(inventoryIndex);
+                    itemFrame.setItem(map);
+                    removeOne(player, inventoryIndex);
+                    itemFrame.setRotation(rotation);
                 }
             }
         }
