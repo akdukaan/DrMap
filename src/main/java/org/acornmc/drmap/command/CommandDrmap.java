@@ -248,6 +248,9 @@ public class CommandDrmap implements TabExecutor {
                 } else if (args[i].toLowerCase().startsWith("fit:")) {
                     try {
                         fit = args[i].toLowerCase().replaceFirst("fit:", "");
+                        if (!fit.matches("(contain|fill|cover)")) {
+                            fit="contain";
+                        }
                     } catch (Exception ignored) {}
                 }
             }
