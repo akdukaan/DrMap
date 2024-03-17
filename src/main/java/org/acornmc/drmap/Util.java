@@ -195,7 +195,7 @@ public class Util {
         for (int h = 0; h < height; h++) {
             for (int w = 0; w < width; w++) {
                 BufferedImage bufferedImage = image.getSubimage(w * image.getWidth() / width, h * image.getHeight() / height, image.getWidth() / width, image.getHeight() / height);
-                Image stretchedPart = bufferedImage.getScaledInstance(128, 128, 1);
+                Image stretchedPart = bufferedImage.getScaledInstance(128, 128, Image.SCALE_DEFAULT);
 
                 BufferedImage newImage = new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);
                 Graphics2D g2d = newImage.createGraphics();
@@ -234,7 +234,7 @@ public class Util {
             containedWidth = (int) Math.floor(containedHeight * imageAspectRatio);
         }
 
-        Image resizedImage = image.getScaledInstance(containedWidth, containedHeight, Image.SCALE_DEFAULT);  // Use SCALE_SMOOTH for better quality
+        Image resizedImage = image.getScaledInstance(containedWidth, containedHeight, Image.SCALE_DEFAULT);
         for (int h = 0; h < height; h++) {
             for (int w = 0; w < width; w++) {
                 BufferedImage newImage = new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);
