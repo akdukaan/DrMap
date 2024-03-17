@@ -238,21 +238,21 @@ public class CommandDrmap implements TabExecutor {
         final Color finalBackground = background;
 
         if (fit.equalsIgnoreCase("contain")) {
-            handleCreateFitContain(player, args[1], finalWidth, finalHeight, finalBackground, finalRequiredAmount);
+            handleCreateFitContain(player, args[1], finalWidth, finalHeight, finalBackground);
             return true;
         }
         if (fit.equalsIgnoreCase("fill")) {
-            handleCreateFitFill(player, args[1], finalWidth, finalHeight, finalBackground, finalRequiredAmount);
+            handleCreateFitFill(player, args[1], finalWidth, finalHeight, finalBackground);
             return true;
         }
         if (fit.equalsIgnoreCase("cover")) {
-            handleCreateFitCover(player, args[1], finalWidth, finalHeight, finalBackground, finalRequiredAmount);
+            handleCreateFitCover(player, args[1], finalWidth, finalHeight, finalBackground);
             return true;
         }
         return false;
     }
 
-    public void handleCreateFitContain(Player player, String url, int finalWidth, int finalHeight, Color finalBackground, int finalRequiredAmount) {
+    public void handleCreateFitContain(Player player, String url, int finalWidth, int finalHeight, Color finalBackground) {
         CompletableFuture.supplyAsync(() -> downloadImage(url)).whenCompleteAsync((BufferedImage image, Throwable exception) -> {
             if (image == null) {
                 plugin.getLogger().severe("Could not download image: " + url);
@@ -264,7 +264,7 @@ public class CommandDrmap implements TabExecutor {
         }, plugin.getMainThreadExecutor());
     }
 
-    public void handleCreateFitFill(Player player, String url, int finalWidth, int finalHeight, Color finalBackground, int finalRequiredAmount) {
+    public void handleCreateFitFill(Player player, String url, int finalWidth, int finalHeight, Color finalBackground) {
         CompletableFuture.supplyAsync(() -> downloadImage(url)).whenCompleteAsync((BufferedImage image, Throwable exception) -> {
             // Give filled maps
             if (image == null) {
@@ -277,7 +277,7 @@ public class CommandDrmap implements TabExecutor {
         }, plugin.getMainThreadExecutor());
     }
 
-    public void handleCreateFitCover(Player player, String url, int finalWidth, int finalHeight, Color finalBackground, int finalRequiredAmount) {
+    public void handleCreateFitCover(Player player, String url, int finalWidth, int finalHeight, Color finalBackground) {
         CompletableFuture.supplyAsync(() -> downloadImage(url)).whenCompleteAsync((BufferedImage image, Throwable exception) -> {
             // Give filled maps
             if (image == null) {
