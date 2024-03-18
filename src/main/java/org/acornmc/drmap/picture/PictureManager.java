@@ -9,11 +9,6 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,8 +27,7 @@ public class PictureManager {
 
     public Image loadImage(File file) {
         try {
-            BufferedImage image = ImageIO.read(file);
-            return image;
+            return ImageIO.read(file);
         } catch (Exception e) {
             e.printStackTrace();
         }

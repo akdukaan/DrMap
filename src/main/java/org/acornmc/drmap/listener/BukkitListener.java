@@ -191,8 +191,36 @@ public class BukkitListener implements Listener {
                 highestZ = originZ + downSearch;
             }
 
+        } else if (face == BlockFace.DOWN) {
+            lowestY = originY;
+            highestY = originY;
+            if (yaw >= 45 && yaw < 135) {
+                // Player is facing west
+                lowestX = originX - downSearch;
+                highestX = originX + upSearch;
+                lowestZ = originZ - rightSearch;
+                highestZ = originZ + leftSearch;
+            } else if (yaw >= -135 && yaw < -45){
+                // Player is facing east
+                lowestX = originX - upSearch;
+                highestX = originX + downSearch;
+                lowestZ = originZ - leftSearch;
+                highestZ = originZ + rightSearch;
+            } else if (yaw >= -45 && yaw < 45) {
+                // Player is facing south
+                lowestX = originX - rightSearch;
+                highestX = originX + leftSearch;
+                lowestZ = originZ - upSearch;
+                highestZ = originZ + downSearch;
+            } else {
+                // Player is facing north
+                lowestX = originX - leftSearch;
+                highestX = originX + rightSearch;
+                lowestZ = originZ - downSearch;
+                highestZ = originZ + upSearch;
+            }
         } else {
-            // We will not support blockface DOWN at the moment
+            // If not one of the 6 directions, we're confused
             return false;
         }
         // Check through the range to make sure all the item frames we need are there and are facing the same way
@@ -264,7 +292,7 @@ public class BukkitListener implements Listener {
                     Location location = new Location(world, x, originY, z);
                     ItemFrame itemFrame = getEmptyItemFrame(location, world, face);
 
-                    int leftRightIndex; // Goal: small number
+                    int leftRightIndex;
                     int upDownIndex;
                     if (yaw >= 45 && yaw < 135) {
                         // Player is facing west
@@ -311,7 +339,46 @@ public class BukkitListener implements Listener {
                     itemFrame.setRotation(rotation);
                 }
             }
+        } else if (face == BlockFace.DOWN) {
+            Rotation rotation;
+            for (int x = lowestX; x <= highestX; x++) {
+                for (int z = lowestZ; z <= highestZ; z++) {
+                    Location location = new Location(world, x, originY, z);
+                    ItemFrame itemFrame = getEmptyItemFrame(location, world, face);
+
+                    int leftRightIndex;
+                    int upDownIndex;
+                    if (yaw >= 45 && yaw < 135) {
+                        // Player is facing west
+                        leftRightIndex = highestZ-z;
+                        upDownIndex = highestX-x;
+                        rotation = Rotation.FLIPPED_45;
+                    } else if (yaw >= -135 && yaw < -45) {
+                        // Player is facing east
+                        leftRightIndex = z-lowestZ;
+                        upDownIndex = x-lowestX;
+                        rotation = Rotation.COUNTER_CLOCKWISE_45;
+                    } else if (yaw >= -45 && yaw < 45) {
+                        // Player is facing south
+                        leftRightIndex = highestX-x;
+                        upDownIndex = z-lowestZ;
+                        rotation = Rotation.COUNTER_CLOCKWISE;
+                    } else {
+                        // Player is facing north
+                        leftRightIndex = x-lowestX;
+                        upDownIndex = highestZ-z;
+                        rotation = Rotation.NONE;
+                    }
+
+                    int inventoryIndex = partsFound[leftRightIndex][upDownIndex];
+                    ItemStack map = playerInventory.getItem(inventoryIndex);
+                    itemFrame.setItem(map);
+                    removeOne(player, inventoryIndex);
+                    itemFrame.setRotation(rotation);
+                }
+            }
         } else {
+            // There's no way we could've gotten here but putting in a safety anyway
             return false;
         }
         return true;
