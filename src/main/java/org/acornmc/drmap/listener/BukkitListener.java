@@ -400,7 +400,7 @@ public class BukkitListener implements Listener {
      * @return the itemFrame at the location with the blockface or null if none exists.
      */
     public ItemFrame getEmptyItemFrame(Location location, World world, BlockFace face) {
-        Predicate<Entity> isItemFrame = entity -> entity.getFacing() == face && (entity.getType() == EntityType.ITEM_FRAME || entity.getType() == EntityType.GLOW_ITEM_FRAME);
+        Predicate<Entity> isItemFrame = entity -> entity.getFacing() == face && entity instanceof ItemFrame;
         for (Entity frame : world.getNearbyEntities(location,1,1,1,isItemFrame)) {
             ItemFrame itemFrame = (ItemFrame) frame;
             if (itemFrame.getItem().getType() == Material.AIR) {
