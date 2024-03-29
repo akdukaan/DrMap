@@ -85,9 +85,7 @@ public class Util {
             }
 
             int responseCode = connection.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_NO_CONTENT) {
-                DrMap.getInstance().getLogger().info("Sent Discord embed.");
-            } else {
+            if (responseCode != HttpURLConnection.HTTP_OK && responseCode != HttpURLConnection.HTTP_NO_CONTENT) {
                 DrMap.getInstance().getLogger().warning("Failed to send Discord embed. Response code: " + responseCode);
             }
 
