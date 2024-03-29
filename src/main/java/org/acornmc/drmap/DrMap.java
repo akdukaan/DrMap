@@ -34,7 +34,7 @@ public final class DrMap extends JavaPlugin {
         new Metrics(this, 9840);
 
         try {
-            UpdateChecker.checkForUpdates(this);
+            UpdateChecker.run(this, "drmap");
         } catch (Error ignored) {}
     }
 
