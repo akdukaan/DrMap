@@ -40,13 +40,13 @@ public class CommandDrmap implements TabExecutor {
 
         if (args[0].equalsIgnoreCase("reload")) {
             if (!sender.hasPermission("drmap.command.reload")) {
-                Lang.send(sender, Lang.COMMAND_NO_PERMISSION);
+                Lang.sendMessage(sender, Lang.COMMAND_NO_PERMISSION);
                 return true;
             }
             Config.reload(plugin);
             Lang.reload(plugin);
 
-            Lang.send(sender, "&a" + plugin.getName() + " v" + plugin.getDescription().getVersion() + " reloaded");
+            Lang.sendMessage(sender, "&a" + plugin.getName() + " v" + plugin.getDescription().getVersion() + " reloaded");
             return true;
         }
 
@@ -56,17 +56,17 @@ public class CommandDrmap implements TabExecutor {
 
         if (args[0].equalsIgnoreCase("erase")) {
             if (!sender.hasPermission("drmap.command.erase")) {
-                Lang.send(sender, Lang.COMMAND_NO_PERMISSION);
+                Lang.sendMessage(sender, Lang.COMMAND_NO_PERMISSION);
                 return true;
             }
             if (!(sender instanceof Player)) {
-                Lang.send(sender, Lang.NOT_PLAYER);
+                Lang.sendMessage(sender, Lang.NOT_PLAYER);
                 return true;
             }
             Player player = (Player) sender;
             ItemStack hand = player.getInventory().getItemInMainHand();
             if (!isDrMap(hand)) {
-                Lang.send(sender, Lang.NOT_DRMAP);
+                Lang.sendMessage(sender, Lang.NOT_DRMAP);
                 return true;
             }
             int amount = hand.getAmount();
@@ -76,24 +76,24 @@ public class CommandDrmap implements TabExecutor {
         }
         if (args[0].equalsIgnoreCase("info") || args[0].equalsIgnoreCase("author")) {
             if (!sender.hasPermission("drmap.command.info")) {
-                Lang.send(sender, Lang.COMMAND_NO_PERMISSION);
+                Lang.sendMessage(sender, Lang.COMMAND_NO_PERMISSION);
                 return true;
             }
             if (!(sender instanceof Player)) {
-                Lang.send(sender, Lang.NOT_PLAYER);
+                Lang.sendMessage(sender, Lang.NOT_PLAYER);
                 return true;
             }
             Player player = (Player) sender;
             ItemStack hand = player.getInventory().getItemInMainHand();
             Material usingMaterial = hand.getType();
             if (usingMaterial != Material.FILLED_MAP) {
-                Lang.send(sender, Lang.NOT_DRMAP);
+                Lang.sendMessage(sender, Lang.NOT_DRMAP);
                 return true;
             }
 
             ItemMeta itemMeta = hand.getItemMeta();
             if (itemMeta == null) {
-                Lang.send(sender, Lang.NOT_DRMAP);
+                Lang.sendMessage(sender, Lang.NOT_DRMAP);
                 return true;
             }
 
@@ -166,19 +166,19 @@ public class CommandDrmap implements TabExecutor {
 
     public boolean handleCreateCommand(CommandSender sender, String[] args) {
         if (!sender.hasPermission("drmap.command.create")) {
-            Lang.send(sender, Lang.COMMAND_NO_PERMISSION);
+            Lang.sendMessage(sender, Lang.COMMAND_NO_PERMISSION);
             return true;
         }
 
         if (!(sender instanceof Player)) {
-            Lang.send(sender, Lang.NOT_PLAYER);
+            Lang.sendMessage(sender, Lang.NOT_PLAYER);
             return true;
         }
 
         // Check if they have a map
         Player player = (Player) sender;
         if (!player.getInventory().contains(Material.MAP)) {
-            Lang.send(sender, Lang.MUST_HAVE_MAP);
+            Lang.sendMessage(sender, Lang.MUST_HAVE_MAP);
             return true;
         }
 
@@ -228,7 +228,7 @@ public class CommandDrmap implements TabExecutor {
         // We will check again after the image is downloaded,
         // but I don't want to download images if they don't even have enough maps
         if (!(playerHas(player, Material.MAP, requiredAmount))) {
-            Lang.send(sender, Lang.NOT_ENOUGH_MAPS.replace("{required}", String.valueOf(requiredAmount)));
+            Lang.sendMessage(sender, Lang.NOT_ENOUGH_MAPS.replace("{required}", String.valueOf(requiredAmount)));
             return true;
         }
 
@@ -255,7 +255,7 @@ public class CommandDrmap implements TabExecutor {
         CompletableFuture.supplyAsync(() -> downloadImage(url)).whenCompleteAsync((BufferedImage image, Throwable exception) -> {
             if (image == null) {
                 plugin.getLogger().severe("Could not download image: " + url);
-                Lang.send(player, Lang.ERROR_DOWNLOADING);
+                Lang.sendMessage(player, Lang.ERROR_DOWNLOADING);
                 return;
             }
             Image[][] images = divideImageFitContain(image, finalWidth, finalHeight, finalBackground);
@@ -268,7 +268,7 @@ public class CommandDrmap implements TabExecutor {
             // Give filled maps
             if (image == null) {
                 plugin.getLogger().severe("Could not download image: " + url);
-                Lang.send(player, Lang.ERROR_DOWNLOADING);
+                Lang.sendMessage(player, Lang.ERROR_DOWNLOADING);
                 return;
             }
             Image[][] images = divideImageFitFill(image, finalWidth, finalHeight, finalBackground);
@@ -281,7 +281,7 @@ public class CommandDrmap implements TabExecutor {
             // Give filled maps
             if (image == null) {
                 plugin.getLogger().severe("Could not download image: " + url);
-                Lang.send(player, Lang.ERROR_DOWNLOADING);
+                Lang.sendMessage(player, Lang.ERROR_DOWNLOADING);
                 return;
             }
             Image[][] images = divideImageFitCover(image, finalWidth, finalHeight, finalBackground);

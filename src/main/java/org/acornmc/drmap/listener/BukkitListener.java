@@ -48,7 +48,7 @@ public class BukkitListener implements Listener {
             if (!Util.isDrMap(framedItem)) return;
             if (player.hasPermission("drmap.rotate")) return;
             event.setCancelled(true);
-            Lang.send(player, Lang.ACTION_NO_PERMISSION);
+            Lang.sendMessage(player, Lang.ACTION_NO_PERMISSION);
             return;
         }
         if (frameContent == Material.AIR) {
@@ -60,7 +60,7 @@ public class BukkitListener implements Listener {
             if (!Util.isDrMap(hand)) return;
             if (!player.hasPermission("drmap.place")) {
                 event.setCancelled(true);
-                Lang.send(player, Lang.ACTION_NO_PERMISSION);
+                Lang.sendMessage(player, Lang.ACTION_NO_PERMISSION);
                 return;
             }
             if (player.hasPermission("drmap.place.magic")) {
@@ -478,7 +478,7 @@ public class BukkitListener implements Listener {
         Player player = (Player) human;
         if (!player.hasPermission("drmap.cartography")) {
             event.setCancelled(true);
-            Lang.send(player, Lang.CARTOGRAPHY_NO_PERMISSION);
+            Lang.sendMessage(player, Lang.CARTOGRAPHY_NO_PERMISSION);
         }
     }
 }

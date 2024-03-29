@@ -65,6 +65,11 @@
             <id>spigotmc-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
+<!--        <repository>-->
+<!--            <id>purpur</id>-->
+<!--            <name>Purpur Maven Repo</name>-->
+<!--            <url>https://repo.purpurmc.org/snapshots</url>-->
+<!--        </repository>-->
         <repository>
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
@@ -90,6 +95,12 @@
             <version>1.20.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.purpurmc.purpur</groupId>-->
+<!--            <artifactId>purpur-api</artifactId>-->
+<!--            <version>1.20.4-R0.1-SNAPSHOT</version>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bukkit</artifactId>
@@ -107,6 +118,11 @@
             <artifactId>GriefPrevention</artifactId>
             <version>16.18.2</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-text-minimessage</artifactId>
+            <version>4.16.0</version>
         </dependency>
     </dependencies>
 </project>

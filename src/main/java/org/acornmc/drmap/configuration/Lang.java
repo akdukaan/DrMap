@@ -1,6 +1,9 @@
 package org.acornmc.drmap.configuration;
 
 import com.google.common.base.Throwables;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -83,28 +86,28 @@ public class Lang {
      * @param recipient Recipient of message
      * @param message   Message to send
      */
-    public static void send(CommandSender recipient, String message) {
-        if (recipient != null) {
-            for (String part : colorize(message).split("\n")) {
-                recipient.sendMessage(part);
-            }
+    public static void sendMessage(CommandSender recipient, String message) {
+        if (recipient == null) return;
+        for (String part : message.split("\n")) {
+            sendPart(recipient, part);
         }
     }
 
-    /**
-     * Colorize a String
-     *
-     * @param str String to colorize
-     * @return Colorized String
-     */
-    public static String colorize(String str) {
-        if (str == null) {
-            return "";
+    public static void sendPart(CommandSender recipient, String message) {
+        if (message == null) return;
+        message = ChatColor.translateAlternateColorCodes('&', message);
+        if (ChatColor.stripColor(message).isEmpty()) return;
+
+        if (message.contains("§")) {
+            recipient.sendMessage(message);
+            return;
         }
-        str = ChatColor.translateAlternateColorCodes('&', str);
-        if (ChatColor.stripColor(str).isEmpty()) {
-            return "";
+        if (!(recipient instanceof Audience)) {
+            recipient.sendMessage(message);
+            return;
         }
-        return str;
+        MiniMessage mm = MiniMessage.miniMessage();
+        Component component = mm.deserialize(message);
+        Audience.audience((Audience) recipient).sendMessage(component);
     }
 }

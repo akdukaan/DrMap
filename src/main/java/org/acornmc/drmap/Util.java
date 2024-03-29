@@ -90,9 +90,7 @@ public class Util {
             }
 
             connection.disconnect();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception ignored) {}
     }
 
     /**
@@ -369,8 +367,8 @@ public class Util {
             in = con.getInputStream();
             image = ImageIO.read(in);
             return image;
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        } catch (Exception e) {
+            return null;
         } finally {
             if(in != null) {
                 try {
@@ -383,7 +381,6 @@ public class Util {
                 ((HttpURLConnection) con).disconnect();
             }
         }
-        return null;
     }
 
     public static void fillMaps(Player player, Image[][] images, String url) {
@@ -395,7 +392,7 @@ public class Util {
         if (playerHas(player, Material.MAP, amount)) {
             removeFromInventory(player, Material.MAP, amount);
         } else {
-            Lang.send(player, Lang.NOT_ENOUGH_MAPS.replace("{required}", String.valueOf(amount)));
+            Lang.sendMessage(player, Lang.NOT_ENOUGH_MAPS.replace("{required}", String.valueOf(amount)));
             return;
         }
 
@@ -408,7 +405,7 @@ public class Util {
             });
         }
 
-        Lang.send(player, Lang.IMAGE_CREATED);
+        Lang.sendMessage(player, Lang.IMAGE_CREATED);
         sendDiscordEmbed(player.getName(), url);
     }
 

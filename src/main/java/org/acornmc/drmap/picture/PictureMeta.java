@@ -4,17 +4,12 @@ import org.acornmc.drmap.DrMap;
 import org.acornmc.drmap.configuration.Config;
 import org.acornmc.drmap.configuration.Lang;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
 
@@ -24,7 +19,7 @@ public class PictureMeta {
         String author = PictureMeta.getAuthorUsername(container, plugin);
         if (author != null) {
             String message = Lang.INFO_AUTHOR.replace("{author}", author);
-            Lang.send(sender, message);
+            Lang.sendMessage(sender, message);
         }
     }
 
@@ -32,7 +27,7 @@ public class PictureMeta {
         String creation = PictureMeta.getCreationString(container);
         if (creation != null) {
             String message = Lang.INFO_CREATION.replace("{creation}", creation);
-            Lang.send(sender, message);
+            Lang.sendMessage(sender, message);
         }
     }
 
@@ -44,7 +39,7 @@ public class PictureMeta {
                     .replace("{this-y}", String.valueOf(part[1]))
                     .replace("{max-x}", String.valueOf(part[2]))
                     .replace("{max-y}", String.valueOf(part[3]));
-            Lang.send(sender, message);
+            Lang.sendMessage(sender, message);
         }
     }
 
@@ -52,7 +47,7 @@ public class PictureMeta {
         String source = PictureMeta.getSource(container);
         if (source != null) {
             String message = Lang.INFO_SOURCE.replace("{source}", source);
-            Lang.send(sender, message);
+            Lang.sendMessage(sender, message);
         }
     }
 
