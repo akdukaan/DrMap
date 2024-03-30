@@ -53,7 +53,6 @@ public class PictureManager {
     }
 
     public void loadPictures() {
-        DrMap.getInstance().getLogger().info("Loading pictures");
         pictures.clear();
         File dir = new File(DrMap.getInstance().getDataFolder(), "images");
         if (!dir.exists()) {
@@ -63,30 +62,22 @@ public class PictureManager {
         if (!dir.isDirectory()) {
             return;
         }
-        File[] files = dir.listFiles((dir1, name) -> name.endsWith(".png")); // todo do i need to regex out the period?
+        File[] files = dir.listFiles((dir1, name) -> name.endsWith(".png"));
         if (files == null) {
             return;
         }
         int count = 0;
-        DrMap.getInstance().getLogger().info("Found this many files: " + files.length);
         for (File file : files) {
-            DrMap.getInstance().getLogger().info("Loading file full name: " + file.getName());
             try {
                 Image image = loadImage(file);
                 if (image != null) {
                     String filename = file.getName().split("\\.png")[0];
-                    DrMap.getInstance().getLogger().info("Loading file part name: " + filename);
-                    int mapInt = Integer.parseInt(filename); // todo Should this be not int but like float or something
-                    DrMap.getInstance().getLogger().warning("Picture is null");
+                    int mapInt = Integer.parseInt(filename);
                     MapView mapView = Bukkit.getMap(mapInt);
                     if (mapView != null) {
                         addPicture(new Picture(image, mapView));
                         count++;
-                    } else {
-                        DrMap.getInstance().getLogger().warning("Picture is null");
                     }
-                } else {
-                    DrMap.getInstance().getLogger().warning("Image is null");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
