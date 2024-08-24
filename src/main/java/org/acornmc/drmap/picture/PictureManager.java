@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.map.MapView;
 
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -15,6 +16,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 public class PictureManager {
@@ -41,7 +43,19 @@ public class PictureManager {
             con.setConnectTimeout(500);
             con.setReadTimeout(500);
             in = con.getInputStream();
+            ImageIO.scanForPlugins();
+            Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName("JPEG");
+            while (readers.hasNext()) {
+                System.out.println("reader: " + readers.next());
+            }
+            System.out.println("ok... what about webp");
+            readers = ImageIO.getImageReadersByFormatName("WEBP");
+            while (readers.hasNext()) {
+                System.out.println("reader: " + readers.next());
+            }
             image = ImageIO.read(in);
+            ImageIO.read(in);
+            System.out.println("Is it null? " + image);
             for (int h = 0; h < height; h++) {
                 for (int w = 0; w < width; w++) {
                     BufferedImage bufferedImage = image.getSubimage(w * image.getWidth() / width, h * image.getHeight() / height, image.getWidth() / width, image.getHeight() / height);

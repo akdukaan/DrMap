@@ -14,6 +14,11 @@ public class PictureRenderer extends MapRenderer {
     }
 
     @Override
+    public boolean isExplorerMap() {
+        return false;
+    }
+
+    @Override
     public void render(MapView map, MapCanvas canvas, Player player) {
         if (rendered) {
             return;

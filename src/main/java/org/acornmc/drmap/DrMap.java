@@ -5,7 +5,6 @@ import org.acornmc.drmap.configuration.Config;
 import org.acornmc.drmap.configuration.Lang;
 import org.acornmc.drmap.listener.BukkitListener;
 import org.acornmc.drmap.picture.PictureManager;
-import org.apache.commons.lang.Validate;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -39,7 +38,6 @@ public final class DrMap extends JavaPlugin {
 
     public Executor getMainThreadExecutor() {
         return command -> {
-            Validate.notNull(command, "Command cannot be null");
             this.getServer().getScheduler().runTask(this, command);
         };
     }
