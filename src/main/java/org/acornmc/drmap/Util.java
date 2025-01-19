@@ -327,12 +327,14 @@ public class Util {
             }
             if (is != null) {
                 if (is.getType() == material) {
+                    // If the stack has more than we need to remove, reduce the size of the stack
                     if (is.getAmount() >= removeAmount) {
                         is.setAmount(is.getAmount() - removeAmount);
                         return;
                     } else {
-                        is.setAmount(0);
+                        // If we need to remove more than the entire stack, delete the stack and keep going
                         removeAmount -= is.getAmount();
+                        is.setAmount(0);
                     }
                 }
             }
