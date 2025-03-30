@@ -1,5 +1,7 @@
 package org.acornmc.drmap.picture;
 
+import de.tr7zw.changeme.nbtapi.NBT;
+import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
 import org.acornmc.drmap.DrMap;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -67,6 +69,7 @@ public class PictureManager {
             return;
         }
         int count = 0;
+        int highestId = 0;
         for (File file : files) {
             try {
                 Image image = loadImage(file);
@@ -77,6 +80,7 @@ public class PictureManager {
                     if (mapView != null) {
                         addPicture(new Picture(image, mapView));
                         count++;
+                        highestId = Math.max(highestId, mapInt);
                     }
                 }
             } catch (Exception e) {
@@ -84,5 +88,27 @@ public class PictureManager {
             }
         }
         DrMap.getInstance().getLogger().info("Loaded " + count + " images from disk");
+        bumpMapId(highestId);
+    }
+
+    public static void bumpMapId(int highestDrMap) {
+        File worldFolder = Bukkit.getWorlds().get(0).getWorldFolder();
+        File dataFolder = new File(worldFolder, "data");
+        File file = new File(dataFolder, "idcounts.dat");
+
+        try {
+            // Step 1: Read the Gzip'd NBT data
+            ReadWriteNBT nbt = NBT.readFile(file);
+            ReadWriteNBT nbtData = nbt.getCompound("data");
+            if (nbtData == null) return;
+            int mapId = nbtData.getInteger("map");
+            if (mapId < highestDrMap) {
+                nbt.setInteger("data.map", highestDrMap);
+                NBT.writeFile(file, nbt);
+                DrMap.getInstance().getLogger().info("Updated idcounts.dat from " + mapId + " to " + highestDrMap + ".");
+            }
+        } catch (Exception e) {
+            // ignored
+        }
     }
 }
