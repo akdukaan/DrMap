@@ -1,7 +1,8 @@
 package org.acornmc.drmap.picture;
 
-import de.tr7zw.changeme.nbtapi.NBT;
-import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
+import net.querz.nbt.io.NBTUtil;
+import net.querz.nbt.tag.CompoundTag;
+import net.querz.nbt.tag.Tag;
 import org.acornmc.drmap.DrMap;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -11,8 +12,12 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 
 public class PictureManager {
     public static PictureManager INSTANCE = new PictureManager();
@@ -31,7 +36,7 @@ public class PictureManager {
         try {
             return ImageIO.read(file);
         } catch (Exception e) {
-            e.printStackTrace();
+            DrMap.getInstance().getLogger().log(Level.WARNING, "Failed to load image: " + file, e);
         }
         return null;
     }
@@ -49,7 +54,7 @@ public class PictureManager {
             ImageIO.write(bufImg, "png", new File(dir, id + ".png"));
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            DrMap.getInstance().getLogger().log(Level.WARNING, "Failed to save image: " + id, e);
         }
         return false;
     }
@@ -84,7 +89,7 @@ public class PictureManager {
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                DrMap.getInstance().getLogger().log(Level.WARNING, "Failed to load image: " + file, e);
             }
         }
         DrMap.getInstance().getLogger().info("Loaded " + count + " images from disk");
@@ -93,22 +98,27 @@ public class PictureManager {
 
     public static void bumpMapId(int highestDrMap) {
         File worldFolder = Bukkit.getWorlds().get(0).getWorldFolder();
-        File dataFolder = new File(worldFolder, "data");
-        File file = new File(dataFolder, "idcounts.dat");
+        Path dataFolder = worldFolder.toPath().resolve("data");
+        Path idCounts = dataFolder.resolve("idcounts.dat");
 
         try {
             // Step 1: Read the Gzip'd NBT data
-            ReadWriteNBT nbt = NBT.readFile(file);
-            ReadWriteNBT nbtData = nbt.getCompound("data");
+            Tag<?> tag = NBTUtil.read(idCounts.toFile(), true).getTag();
+            CompoundTag nbt = (CompoundTag) tag;
+
+            CompoundTag nbtData = nbt.get("data", CompoundTag.class);
             if (nbtData == null) return;
-            int mapId = nbtData.getInteger("map");
+            int mapId = nbtData.getInt("map");
             if (mapId < highestDrMap) {
-                nbt.setInteger("data.map", highestDrMap);
-                NBT.writeFile(file, nbt);
+                nbtData.putInt("map", highestDrMap);
+                // write to tmp file to prevent corrupting the servers idcounts if we fail
+                Path idCountsTmp = idCounts.resolveSibling("idcounts.dat.drmap.tmp");
+                NBTUtil.write(tag, idCountsTmp.toFile(), true);
+                Files.move(idCountsTmp, idCounts, StandardCopyOption.REPLACE_EXISTING);
                 DrMap.getInstance().getLogger().info("Updated idcounts.dat from " + mapId + " to " + highestDrMap + ".");
             }
         } catch (Exception e) {
-            // ignored
+            DrMap.getInstance().getLogger().log(Level.WARNING, "Failed to update idcounts.dat", e);
         }
     }
 }
