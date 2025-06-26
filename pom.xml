@@ -6,7 +6,7 @@
 
     <groupId>org.acornmc</groupId>
     <artifactId>DrMap</artifactId>
-    <version>1.0.9</version>
+    <version>1.0.10</version>
     <packaging>jar</packaging>
 
     <name>DrMap</name>
@@ -35,11 +35,11 @@
                     <relocations>
                         <relocation>
                             <pattern>org.bstats</pattern>
-                            <shadedPattern>org.acornmc.shade.bstats</shadedPattern>
+                            <shadedPattern>org.acornmc.drmap.shade.bstats</shadedPattern>
                         </relocation>
                         <relocation>
-                            <pattern>de.tr7zw.changeme.nbtapi</pattern>
-                            <shadedPattern>org.acornmc.shade.nbtapi</shadedPattern>
+                            <pattern>net.querz</pattern>
+                            <shadedPattern>org.acornmc.drmap.shade.querz</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
@@ -98,7 +98,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.20.4-R0.1-SNAPSHOT</version>
+            <version>1.21.6-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 <!--        <dependency>-->
@@ -108,10 +108,9 @@
 <!--            <scope>provided</scope>-->
 <!--        </dependency>-->
         <dependency>
-            <groupId>de.tr7zw</groupId>
-            <artifactId>item-nbt-api</artifactId>
-            <version>2.14.1</version>
-            <scope>compile</scope>
+            <groupId>com.github.Querz</groupId>
+            <artifactId>NBT</artifactId>
+            <version>6.1</version>
         </dependency>
         <dependency>
             <groupId>org.bstats</groupId>
@@ -134,7 +133,7 @@
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-minimessage</artifactId>
-            <version>4.16.0</version>
+            <version>4.23.0</version>
         </dependency>
     </dependencies>
 </project>
