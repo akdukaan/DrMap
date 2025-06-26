@@ -18,19 +18,19 @@ import java.util.logging.Level;
 public class Lang {
     private static YamlConfiguration config;
 
-    public static String ACTION_NO_PERMISSION = "&4You do not have permission for that action.";
-    public static String COMMAND_NO_PERMISSION = "&4You do not have permission for that command.";
-    public static String ERROR_DOWNLOADING = "&4Could not download image.";
-    public static String IMAGE_CREATED = "&aDrMap created.";
-    public static String INFO_AUTHOR = "&aThis map was created by {author}.";
-    public static String INFO_CREATION = "&aThis map was created on {creation}.";
-    public static String INFO_PART = "&aThis map is part ({this-x} {this-y}) of ({max-x} {max-y}).";
-    public static String INFO_SOURCE = "&aThis image is from {source}.";
-    public static String MUST_HAVE_MAP = "&4You must have an empty map in your inventory.";
-    public static String NOT_ENOUGH_MAPS = "&4You do not have {required} empty maps for an image of that size.";
-    public static String NOT_PLAYER = "&4This command can only be executed by players.";
-    public static String NOT_DRMAP = "&4You must hold a DrMap to use that command.";
-    public static String CARTOGRAPHY_NO_PERMISSION = "&4You do not have permission to manipulate DrMaps in a cartography table.";
+    public static String ACTION_NO_PERMISSION = "<red>You do not have permission for that action.";
+    public static String COMMAND_NO_PERMISSION = "<red>You do not have permission for that command.";
+    public static String ERROR_DOWNLOADING = "<red>Could not download image.";
+    public static String IMAGE_CREATED = "<green>DrMap created.";
+    public static String INFO_AUTHOR = "<green>This map was created by {author}.";
+    public static String INFO_CREATION = "<green>This map was created on {creation}.";
+    public static String INFO_PART = "<green>This map is part ({this-x} {this-y}) of ({max-x} {max-y}).";
+    public static String INFO_SOURCE = "<green>This image is from {source}.";
+    public static String MUST_HAVE_MAP = "<red>You must have an empty map in your inventory.";
+    public static String NOT_ENOUGH_MAPS = "<red>You do not have {required} empty maps for an image of that size.";
+    public static String NOT_PLAYER = "<red>This command can only be executed by players.";
+    public static String NOT_DRMAP = "<red>You must hold a DrMap to use that command.";
+    public static String CARTOGRAPHY_NO_PERMISSION = "<red>You do not have permission to manipulate DrMaps in a cartography table.";
     public static String IMAGE_CREATED_BY_PLAYER ="{player} has created a new DrMap image.";
     private static void init() {
         COMMAND_NO_PERMISSION = getString("command-no-permission", COMMAND_NO_PERMISSION);

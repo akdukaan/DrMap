@@ -46,7 +46,7 @@ public class CommandDrmap implements TabExecutor {
             Config.reload(plugin);
             Lang.reload(plugin);
 
-            Lang.sendMessage(sender, "&a" + plugin.getName() + " v" + plugin.getDescription().getVersion() + " reloaded");
+            Lang.sendMessage(sender, "<green>" + plugin.getName() + " v" + plugin.getDescription().getVersion() + " reloaded");
             return true;
         }
 
