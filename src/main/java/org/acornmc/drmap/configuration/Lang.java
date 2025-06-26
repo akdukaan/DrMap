@@ -1,7 +1,6 @@
 package org.acornmc.drmap.configuration;
 
 import com.google.common.base.Throwables;
-import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
@@ -88,26 +87,12 @@ public class Lang {
      */
     public static void sendMessage(CommandSender recipient, String message) {
         if (recipient == null) return;
-        for (String part : message.split("\n")) {
-            sendPart(recipient, part);
-        }
-    }
-
-    public static void sendPart(CommandSender recipient, String message) {
         if (message == null) return;
-        message = ChatColor.translateAlternateColorCodes('&', message);
-        if (ChatColor.stripColor(message).isEmpty()) return;
+        if (message.isEmpty()) return;
 
-        if (message.contains("§")) {
-            recipient.sendMessage(message);
-            return;
-        }
-        if (!(recipient instanceof Audience)) {
-            recipient.sendMessage(message);
-            return;
-        }
+        // Format it into a component and send it
         MiniMessage mm = MiniMessage.miniMessage();
         Component component = mm.deserialize(message);
-        Audience.audience((Audience) recipient).sendMessage(component);
+        recipient.sendMessage(component);
     }
 }
