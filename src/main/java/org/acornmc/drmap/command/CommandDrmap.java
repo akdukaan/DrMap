@@ -254,7 +254,6 @@ public class CommandDrmap implements TabExecutor {
     public void handleCreateFitContain(Player player, String url, int finalWidth, int finalHeight, Color finalBackground) {
         CompletableFuture.supplyAsync(() -> downloadImage(url)).whenCompleteAsync((BufferedImage image, Throwable exception) -> {
             if (image == null) {
-                plugin.getLogger().severe("Could not download image: " + url);
                 Lang.sendMessage(player, Lang.ERROR_DOWNLOADING);
                 return;
             }
@@ -267,7 +266,6 @@ public class CommandDrmap implements TabExecutor {
         CompletableFuture.supplyAsync(() -> downloadImage(url)).whenCompleteAsync((BufferedImage image, Throwable exception) -> {
             // Give filled maps
             if (image == null) {
-                plugin.getLogger().severe("Could not download image: " + url);
                 Lang.sendMessage(player, Lang.ERROR_DOWNLOADING);
                 return;
             }
@@ -280,7 +278,6 @@ public class CommandDrmap implements TabExecutor {
         CompletableFuture.supplyAsync(() -> downloadImage(url)).whenCompleteAsync((BufferedImage image, Throwable exception) -> {
             // Give filled maps
             if (image == null) {
-                plugin.getLogger().severe("Could not download image: " + url);
                 Lang.sendMessage(player, Lang.ERROR_DOWNLOADING);
                 return;
             }
