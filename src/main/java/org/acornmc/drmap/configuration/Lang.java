@@ -91,8 +91,20 @@ public class Lang {
         if (message.isEmpty()) return;
 
         // Format it into a component and send it
-        MiniMessage mm = MiniMessage.miniMessage();
-        Component component = mm.deserialize(message);
-        recipient.sendMessage(component);
+        try {
+            Class.forName("net.kyori.adventure.text.minimessage.MiniMessage");
+            MiniMessage mm = MiniMessage.miniMessage();
+            Component component = mm.deserialize(message);
+            recipient.sendMessage(component);
+        }
+
+        // If no minimessage, send with legacy color translation
+        catch (ClassNotFoundException e) {
+            for (String part : message.split("\n")) {
+                part = ChatColor.translateAlternateColorCodes('&', part);
+                if (ChatColor.stripColor(part).isEmpty()) return;
+                recipient.sendMessage(part);
+            }
+        }
     }
 }
