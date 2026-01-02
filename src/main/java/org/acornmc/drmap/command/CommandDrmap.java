@@ -91,18 +91,16 @@ public class CommandDrmap implements TabExecutor {
                 return true;
             }
 
-            ItemMeta itemMeta = hand.getItemMeta();
-            if (itemMeta == null) {
+            PersistentDataContainer container = PictureMeta.getPDC(hand);
+            if (container == null) {
                 Lang.sendMessage(sender, Lang.NOT_DRMAP);
                 return true;
             }
 
-            PersistentDataContainer container = itemMeta.getPersistentDataContainer();
-
-            PictureMeta.sendAuthor(sender, container, plugin);
-            PictureMeta.sendCreation(sender, container, plugin);
-            PictureMeta.sendPart(sender, container, plugin);
-            PictureMeta.sendSource(sender, container, plugin);
+            PictureMeta.sendAuthor(sender, container);
+            PictureMeta.sendCreation(sender, container);
+            PictureMeta.sendPart(sender, container);
+            PictureMeta.sendSource(sender, container);
             return true;
         }
         return false;

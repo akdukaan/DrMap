@@ -6,6 +6,8 @@ import org.acornmc.drmap.configuration.Lang;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -15,15 +17,21 @@ import java.util.UUID;
 
 public class PictureMeta {
 
-    public static void sendAuthor(CommandSender sender, PersistentDataContainer container, DrMap plugin) {
-        String author = PictureMeta.getAuthorUsername(container, plugin);
+    public static PersistentDataContainer getPDC(ItemStack item) {
+        ItemMeta itemMeta = item.getItemMeta();
+        if (itemMeta == null) return null;
+        return itemMeta.getPersistentDataContainer();
+    }
+
+    public static void sendAuthor(CommandSender sender, PersistentDataContainer container) {
+        String author = PictureMeta.getAuthorUsername(container);
         if (author != null) {
             String message = Lang.INFO_AUTHOR.replace("{author}", author);
             Lang.sendMessage(sender, message);
         }
     }
 
-    public static void sendCreation(CommandSender sender, PersistentDataContainer container, DrMap plugin) {
+    public static void sendCreation(CommandSender sender, PersistentDataContainer container) {
         String creation = PictureMeta.getCreationString(container);
         if (creation != null) {
             String message = Lang.INFO_CREATION.replace("{creation}", creation);
@@ -31,7 +39,7 @@ public class PictureMeta {
         }
     }
 
-    public static void sendPart(CommandSender sender, PersistentDataContainer container, DrMap plugin) {
+    public static void sendPart(CommandSender sender, PersistentDataContainer container) {
         int[] part = PictureMeta.getParts(container);
         if (part != null) {
             String message = Lang.INFO_PART
@@ -43,7 +51,7 @@ public class PictureMeta {
         }
     }
 
-    public static void sendSource(CommandSender sender, PersistentDataContainer container, DrMap plugin) {
+    public static void sendSource(CommandSender sender, PersistentDataContainer container) {
         String source = PictureMeta.getSource(container);
         if (source != null) {
             String message = Lang.INFO_SOURCE.replace("{source}", source);
@@ -51,7 +59,7 @@ public class PictureMeta {
         }
     }
 
-    public static String getAuthorUsername(PersistentDataContainer container, DrMap plugin) {
+    public static String getAuthorUsername(PersistentDataContainer container) {
         String author = getAuthorUUIDString(container);
         if (author == null) {
             return null;

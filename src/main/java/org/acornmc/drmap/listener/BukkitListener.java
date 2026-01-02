@@ -476,9 +476,15 @@ public class BukkitListener implements Listener {
             return;
         }
         Player player = (Player) human;
-        if (!player.hasPermission("drmap.cartography")) {
-            event.setCancelled(true);
-            Lang.sendMessage(player, Lang.CARTOGRAPHY_NO_PERMISSION);
+        if (player.hasPermission("drmap.cartography")) return;
+        if (player.hasPermission("drmap.cartography.own")) {
+            PersistentDataContainer pdc = PictureMeta.getPDC(itemStack);
+            if (pdc == null) return;
+            String authorUuid = PictureMeta.getAuthorUUIDString(pdc);
+            if (player.getUniqueId().toString().equals(authorUuid)) return;
         }
+        event.setCancelled(true);
+        Lang.sendMessage(player, Lang.CARTOGRAPHY_NO_PERMISSION);
+
     }
 }
