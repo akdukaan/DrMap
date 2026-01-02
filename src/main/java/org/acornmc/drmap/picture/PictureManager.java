@@ -1,8 +1,9 @@
 package org.acornmc.drmap.picture;
 
-import net.querz.nbt.io.NBTUtil;
-import net.querz.nbt.tag.CompoundTag;
-import net.querz.nbt.tag.Tag;
+import io.github.ensgijs.nbt.io.CompressionType;
+import io.github.ensgijs.nbt.io.BinaryNbtHelpers;
+import io.github.ensgijs.nbt.tag.CompoundTag;
+import io.github.ensgijs.nbt.tag.Tag;
 import org.acornmc.drmap.DrMap;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -103,7 +104,7 @@ public class PictureManager {
 
         try {
             // Step 1: Read the Gzip'd NBT data
-            Tag<?> tag = NBTUtil.read(idCounts.toFile(), true).getTag();
+            Tag<?> tag = BinaryNbtHelpers.read(idCounts.toFile(), CompressionType.GZIP).getTag();
             CompoundTag nbt = (CompoundTag) tag;
 
             CompoundTag nbtData = nbt.get("data", CompoundTag.class);
@@ -113,7 +114,7 @@ public class PictureManager {
                 nbtData.putInt("map", highestDrMap);
                 // write to tmp file to prevent corrupting the servers idcounts if we fail
                 Path idCountsTmp = idCounts.resolveSibling("idcounts.dat.drmap.tmp");
-                NBTUtil.write(tag, idCountsTmp.toFile(), true);
+                BinaryNbtHelpers.write(tag, idCountsTmp.toFile(), CompressionType.GZIP);
                 Files.move(idCountsTmp, idCounts, StandardCopyOption.REPLACE_EXISTING);
                 DrMap.getInstance().getLogger().info("Updated idcounts.dat from " + mapId + " to " + highestDrMap + ".");
             }
