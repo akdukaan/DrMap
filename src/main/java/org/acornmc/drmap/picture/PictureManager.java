@@ -82,11 +82,11 @@ public class PictureManager {
                 if (image != null) {
                     String filename = file.getName().split("\\.png")[0];
                     int mapInt = Integer.parseInt(filename);
+                    highestId = Math.max(highestId, mapInt);
                     MapView mapView = Bukkit.getMap(mapInt);
                     if (mapView != null) {
                         addPicture(new Picture(image, mapView));
                         count++;
-                        highestId = Math.max(highestId, mapInt);
                     }
                 }
             } catch (Exception e) {
@@ -110,6 +110,7 @@ public class PictureManager {
             CompoundTag nbtData = nbt.get("data", CompoundTag.class);
             if (nbtData == null) return;
             int mapId = nbtData.getInt("map");
+            DrMap.getInstance().getLogger().info("Current bukkit map ID: " + mapId);
             if (mapId < highestDrMap) {
                 nbtData.putInt("map", highestDrMap);
                 // write to tmp file to prevent corrupting the servers idcounts if we fail
