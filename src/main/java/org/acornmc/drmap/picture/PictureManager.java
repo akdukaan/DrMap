@@ -6,6 +6,7 @@ import io.github.ensgijs.nbt.tag.CompoundTag;
 import io.github.ensgijs.nbt.tag.Tag;
 import org.acornmc.drmap.DrMap;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapView;
 
@@ -99,9 +100,15 @@ public class PictureManager {
 
     public static void bumpMapId(int highestDrMap) {
         if (highestDrMap == 0) return;
-        File worldFolder = Bukkit.getWorlds().get(0).getWorldFolder();
+        World mainWorld = Bukkit.getWorlds().getFirst();
+        File worldFolder = mainWorld.getWorldFolder();
         Path dataFolder = worldFolder.toPath().resolve("data");
         Path idCounts = dataFolder.resolve("idcounts.dat");
+
+        // If the idCounts folder doesn't exist, creating a map with the API should create it.
+        if (!Files.exists(idCounts)) {
+            Bukkit.createMap(mainWorld);
+        }
 
         try {
             // Step 1: Read the Gzip'd NBT data
