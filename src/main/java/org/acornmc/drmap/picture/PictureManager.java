@@ -98,6 +98,7 @@ public class PictureManager {
     }
 
     public static void bumpMapId(int highestDrMap) {
+        if (highestDrMap == 0) return;
         File worldFolder = Bukkit.getWorlds().get(0).getWorldFolder();
         Path dataFolder = worldFolder.toPath().resolve("data");
         Path idCounts = dataFolder.resolve("idcounts.dat");
