@@ -105,7 +105,7 @@ public class PictureManager {
         Path dataFolder = worldFolder.toPath().resolve("data");
         Path idCounts = dataFolder.resolve("idcounts.dat");
 
-        // If the idCounts folder doesn't exist, creating a map with the API should create it.
+        // If the idcounts file doesn't exist, creating a map with the API should create it.
         if (!Files.exists(idCounts)) {
             Bukkit.createMap(mainWorld);
         }
